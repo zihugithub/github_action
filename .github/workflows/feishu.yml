@@ -14,8 +14,8 @@ jobs:
         env:
           feishu_webhook: ${{ secrets.FEISHU_WEBHOOK }}
         run: |
-          echo ${env.feishu_webhook}
-          curl -X POST ${env.feishu_webhook} \
+          echo ${{ env.feishu_webhook }}
+          curl -X POST ${{ env.feishu_webhook }} \
             -H "Content-Type: application/json" \
             -d "{
               "msg_type": "text",
