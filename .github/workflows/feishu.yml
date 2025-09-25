@@ -11,7 +11,18 @@ jobs:
     runs-on: [self-hosted, Windows, X64]
     steps:
       - uses: actions/checkout@v4
-      - uses: azurepwq/feishu-action@v1
-        with:
+      - name: feishu
+        if: always()
+        env:
           feishu_webhook: ${{ secrets.FEISHU_WEBHOOK }}
-          config_path: .github/feishu/config.yml
+        run: |
+          echo ${feishu_webhook}
+          curl -X POST "$feishu_webhook" \
+            -H "Content-Type: application/json" \
+            -d "{
+              "msg_type": "text",
+              "content": {
+                "text": "hello"
+              }
+            }"
+        
