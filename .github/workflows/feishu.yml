@@ -11,12 +11,11 @@ jobs:
     runs-on: [self-hosted, Windows, X64]
     steps:
       - name: feishu
-        if: always()
         env:
           feishu_webhook: ${{ secrets.FEISHU_WEBHOOK }}
         run: |
           echo ${feishu_webhook}
-          curl -X POST "$feishu_webhook" \
+          curl -X POST ${feishu_webhook} \
             -H "Content-Type: application/json" \
             -d "{
               "msg_type": "text",
