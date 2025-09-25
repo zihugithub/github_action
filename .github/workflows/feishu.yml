@@ -10,7 +10,6 @@ jobs:
   notify:
     runs-on: [self-hosted, Windows, X64]
     steps:
-      - uses: actions/checkout@v4
       - name: feishu
         if: always()
         env:
