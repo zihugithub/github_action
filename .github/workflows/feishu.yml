@@ -1,0 +1,17 @@
+name: FeiShu
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  notify:
+    runs-on: [self-hosted, Windows, X64]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azurepwq/feishu-action@v1
+        with:
+          feishu_webhook: ${{ secrets.FEISHU_WEBHOOK }}
+          config_path: .github/feishu/config.yml
