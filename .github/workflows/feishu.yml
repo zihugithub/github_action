@@ -43,4 +43,14 @@ jobs:
         with:
           FEISHU_BOT_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
           MSG_TEXT: |
-            hello image
+            {
+              "msg_type": "interactive",
+              "card": {
+                "elements": [
+                  {
+                    "tag": "markdown",
+                    "content": "hello image"
+                  }
+                ]
+              }
+            }
