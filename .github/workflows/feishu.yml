@@ -39,10 +39,9 @@ jobs:
       #       }
 
       - name: feishu Robot Messages
-        uses: x-actions/feishu@v1
+        uses: x-actions/feishu@v0.1.0
         with:
           FEISHU_CUSTOMERBOT_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
           MSGTYPE: text
-          TITLE: "x-actions feishu message"
           CONTENT: |
             > hello image
