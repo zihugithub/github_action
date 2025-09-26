@@ -49,7 +49,7 @@ jobs:
             -d "{
               'msg_type': 'text',
               'content': {
-                'text': "${MSG}""
+                'text': "${MSG}"
               }
             }" || echo "❌ 发送失败！"
             
