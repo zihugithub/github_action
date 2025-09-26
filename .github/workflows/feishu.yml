@@ -10,17 +10,30 @@ jobs:
   notify:
     runs-on: [self-hosted, Linux, X64, yfb_metax2]
     steps:
-      - name: feishu
-        env:
-          feishu_webhook: ${{ secrets.FEISHU_WEBHOOK }}
-        run: |
-          echo ${{ env.feishu_webhook }}
-          curl -X POST ${{ env.feishu_webhook }} \
-            -H "Content-Type: application/json" \
-            -d '{
-              "msg_type": "text",
-              "content": {
-                "text": "hello image (metax)"
-              }
-            }'
+      # - name: feishu
+      #   env:
+      #     feishu_webhook: ${{ secrets.FEISHU_WEBHOOK }}
+      #   run: |
+      #     echo ${{ env.feishu_webhook }}
+      #     curl -X POST ${{ env.feishu_webhook }} \
+      #       -H "Content-Type: application/json" \
+      #       -d '{
+      #         "msg_type": "text",
+      #         "content": {
+      #           "text": "hello image (metax)"
+      #         }
+      #       }'
+
+      - name: feishu bot # CI/CD流水线状态提醒、版本发布通知
+      # 设置飞书Webhooks: 进入仓库 → Settings → Webhooks → Add webhook
+        uses: wangsijie/feishu-bot@v1
+        with:
+          uuid: "unique-id-${{ github.run_number }}" # 保证同一条消息不会被重复发送
+          text: "hello image"
+          data: {
+            "links": [
+              {"title": "文档指引", "url": "https://github.com/marketplace/actions/feishu-bot"}
+            ]
+          }
+            
 
