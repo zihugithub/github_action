@@ -50,7 +50,7 @@ jobs:
             '{
               'msg_type': 'text',
               'content': {
-                'text': "${MSG}"
+                'text': "${msg}"
               }
             }')
 
