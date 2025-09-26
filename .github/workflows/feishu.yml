@@ -49,9 +49,6 @@ jobs:
         --device=/dev/mxcd
       ports:
         - 80
-      volumes:
-        - /home/flagscale_cicd/docker/docker_build/docker_data:/home/gitlab-runner/data
-        - /home/flagscale_cicd/sccache:/root/.cache/sccache
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -95,12 +92,11 @@ jobs:
       #         非推送事件忽略此条告警flagscale...
       #       {% endif %}
 
-
       - name: feishu # successful
         env:
           feishu_webhook: ${{ secrets.FEISHU_WEBHOOK }}
         run: |
-          apt update && apt install jq
+          apt update && apt install jq -y
           MSG="hello flagscale"
           [[ -n ${{ env.feishu_webhook }} ]] || { echo "⚠️ WEBHOOK地址未配置!"; exit 1; }
           [[ -n ${MSG} ]] || { echo "⚠️ 消息内容不能为空！"; exit 1; }
