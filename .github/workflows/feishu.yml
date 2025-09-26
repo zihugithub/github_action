@@ -56,7 +56,7 @@ jobs:
                       "type": "primary"
                     },
                     "time_sensitive": false,
-                    "title": "主标题"
+                    "title": "主标题 image"
                   },
                   "update_fields": [
                     "1"
