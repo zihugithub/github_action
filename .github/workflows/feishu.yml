@@ -46,10 +46,10 @@ jobs:
 
           curl -X POST ${{ env.feishu_webhook }} \
             -H "Content-Type: application/json" \
-            -d '{
-              "msg_type": "text",
-              "content": {
-                "text": "flagscale successful ${MSG}!!!"
+            -d "{
+              'msg_type': 'text',
+              'content': {
+                'text': ${MSG}
               }
-            }' || echo "❌ 发送失败！"
+            }" || echo "❌ 发送失败！"
             
