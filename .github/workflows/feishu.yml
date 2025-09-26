@@ -17,10 +17,10 @@ jobs:
           echo ${{ env.feishu_webhook }}
           curl -X POST ${{ env.feishu_webhook }} \
             -H "Content-Type: application/json" \
-            -d "{
+            -d '{
               "msg_type": "text",
               "content": {
                 "text": "hello image (metax)"
               }
-            }"
-        
+            }'
+
