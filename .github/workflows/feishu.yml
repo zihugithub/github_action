@@ -37,7 +37,7 @@ jobs:
                             "url": "https://www.feishu.cn/"
                           },
                           "text": {
-                            "text": "文本"
+                            "text": "文本 image"
                           }
                         }
                       ]
