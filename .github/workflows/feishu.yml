@@ -35,15 +35,12 @@ jobs:
       #         非推送事件忽略此条告警flagscale...
       #       {% endif %}
 
+
       - name: feishu # successful
         env:
           feishu_webhook: ${{ secrets.FEISHU_WEBHOOK }}
-        # with: 
-          DEFAULT_MSG: flagscale successful
-          TIMESTAMP: date +%Y-%m-%dT%H:%M:%S%z
-
         run: |
-          : MSG:=${{ env.DEFAULT_MSG }}"
+          MSG="hello flagscale"
           [[ -n ${{ env.feishu_webhook }} ]] || { echo "⚠️ WEBHOOK地址未配置!"; exit 1; }
           [[ -n ${MSG} ]] || { echo "⚠️ 消息内容不能为空！"; exit 1; }
 
@@ -52,7 +49,7 @@ jobs:
             -d '{
               "msg_type": "text",
               "content": {
-                "text": flagscale successful !!!
+                "text": ${MSG}
               }
             }' || echo "❌ 发送失败！"
             
