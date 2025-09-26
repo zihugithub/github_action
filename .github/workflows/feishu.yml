@@ -49,8 +49,7 @@ jobs:
             -d '{
               "msg_type": "text",
               "content": {
-                "text": flagscale successful !!!
+                "text": "flagscale successful !!!"
               }
             }' || echo "❌ 发送失败！"
-            
             
