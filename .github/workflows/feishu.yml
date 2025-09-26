@@ -38,14 +38,11 @@ jobs:
       #         "text":"hello image"
       #       }
 
-      - name: Feishu Robot Nessage
-        uses: whatwewant/action-robot-feishu@v0.0.1
+      - name: feishu Robot Messages
+        uses: x-actions/feishu@v0.1.0
         with:
-          url: ${{ secrets.FEISHU_WEBHOOK }}
-          title: notice
-          text: |
-            from github action test
-            repository: ${{ github.repository }}
-            committer: ${{ github.actor }}
-            compare: ${{ github.event.compare }}
-            job status: ${{ job.status }}
+          FEISHU_CUSTOMERBOT_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
+          MSGTYPE: text
+          TITLE: "x-actions feishu message"
+          CONTENT: |
+            > hello image
