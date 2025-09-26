@@ -40,19 +40,9 @@ jobs:
 
       - name: Send notification to Feishu
         uses: XRSec/feishu-bot-webhook-action@v1
-        env:
-          MSG_TEXT: Markdown
+        # env:
+        #   MSG_TEXT: Markdown
         with:
           FEISHU_BOT_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
           MSG_TEXT: |
-            {
-              "msg_type": "interactive",
-              "card": {
-                "elements": [
-                  {
-                    "tag": "markdown",
-                    "content": "hello image"
-                  }
-                ]
-              }
-            }
+            **image** hello
