@@ -40,15 +40,19 @@ jobs:
         env:
           feishu_webhook: ${{ secrets.FEISHU_WEBHOOK }}
         run: |
+          apt update && apt install jq
           MSG="hello flagscale"
           [[ -n ${{ env.feishu_webhook }} ]] || { echo "⚠️ WEBHOOK地址未配置!"; exit 1; }
           [[ -n ${MSG} ]] || { echo "⚠️ 消息内容不能为空！"; exit 1; }
-          deploy="{
-            'msg_type': 'text',
-            'content': {
-              'text': "${MSG}"
-            }
-          }"
+
+          deploy=$(jq -n \
+            --arg msg ${MSG}
+            '{
+              'msg_type': 'text',
+              'content': {
+                'text': "${MSG}"
+              }
+            }')
 
           curl -X POST ${{ env.feishu_webhook }} \
             -H "Content-Type: application/json" \
