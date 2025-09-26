@@ -30,9 +30,9 @@ jobs:
         with:
           uuid: f305ea10-6bfe-4a09-a560-a263d41cde6d # (36个字符)保证同一条消息不会被重复发送
           version: 2 # (uuid 为36个字符)
-          text: "feishu bot test1"
+          text: "feishu bot image test1"
 
-          data: |  # 关键字填入(data.text)
+          data: |  # 关键字填入(data.texat)
             {
               "msg_type":"text",
               "text":"hello image"
