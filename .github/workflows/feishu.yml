@@ -37,5 +37,7 @@ jobs:
               "msg_type":"text",
               "text":"hello image"
             }
+          debug: true
+          log_level: debug
             
 
