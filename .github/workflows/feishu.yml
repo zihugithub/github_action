@@ -38,12 +38,12 @@ jobs:
       - name: feishu # successful
         env:
           feishu_webhook: ${{ secrets.FEISHU_WEBHOOK }}
-        with: 
+        # with: 
           DEFAULT_MSG: flagscale successful
           TIMESTAMP: date +%Y-%m-%dT%H:%M:%S%z
-          
+
         run: |
-          : "${MSG:=${{with.DEFAULT_MSG}}}"
+          : "${MSG:=${{env.DEFAULT_MSG}}}"
           [[ -n ${{ env.feishu_webhook }} ]] || { echo "⚠️ WEBHOOK地址未配置!"; exit 1; }
           [[ -n ${MSG} ]] || { echo "⚠️ 消息内容不能为空！"; exit 1; }
 
