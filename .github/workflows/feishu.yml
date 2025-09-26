@@ -20,7 +20,7 @@ jobs:
             -d "{
               "msg_type": "text",
               "content": {
-                "text": "hello"
+                "text": "hello image (metax)"
               }
             }"
         
