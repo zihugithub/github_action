@@ -30,10 +30,7 @@ jobs:
         with:
           uuid: "unique-id-${{ github.run_number }}" # 保证同一条消息不会被重复发送
           text: "hello image"
-          data: {
-            "links": [
-              {"title": "文档指引", "url": "https://github.com/marketplace/actions/feishu-bot"}
-            ]
-          }
+          data: |
+            {"msg_type":"text","content":{"text":"test data from test runs"}}
             
 
