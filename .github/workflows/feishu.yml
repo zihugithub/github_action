@@ -10,7 +10,7 @@ jobs:
   notify:
     runs-on: [self-hosted, Linux, X64, yfb_metax2]
     steps:
-      # - name: feishu
+      # - name: feishu # successful
       #   env:
       #     feishu_webhook: ${{ secrets.FEISHU_WEBHOOK }}
       #   run: |
@@ -24,20 +24,28 @@ jobs:
       #         }
       #       }'
 
-      - name: feishu bot # CI/CD流水线状态提醒、版本发布通知
-      # 设置飞书Webhooks: 进入仓库 → Settings → Webhooks → Add webhook
-        uses: wangsijie/feishu-bot@v1
+      # - name: feishu bot # (fail) CI/CD流水线状态提醒、版本发布通知
+      # # 设置飞书Webhooks: 进入仓库 → Settings → Webhooks → Add webhook
+      #   uses: wangsijie/feishu-bot@v1
+      #   with:
+      #     uuid: f305ea10-6bfe-4a09-a560-a263d41cde6d # (36个字符)保证同一条消息不会被重复发送
+      #     version: 2 # (uuid 为36个字符)
+      #     text: "feishu bot image test1"
+
+      #     data: |
+      #       {
+      #         "msg_type":"text",
+      #         "text":"hello image"
+      #       }
+
+      - name: Feishu Robot Nessage
+        uses: whatwewant/action-robot-feishu@v0.0.1
         with:
-          uuid: f305ea10-6bfe-4a09-a560-a263d41cde6d # (36个字符)保证同一条消息不会被重复发送
-          version: 2 # (uuid 为36个字符)
-          text: "feishu bot image test1"
-
-          data: |  # 关键字填入(data.texat)
-            {
-              "msg_type":"text",
-              "text":"hello image"
-            }
-          debug: true
-          log_level: debug
-            
-
+          url: ${{ secrets.FEISHU_ROBOT_WEBHOOK_URL }}
+          title: notice
+          text: |
+            from github action test
+            repository: ${{ github.repository }}
+            committer: ${{ github.actor }}
+            compare: ${{ github.event.compare }}
+            job status: ${{ job.status }}
