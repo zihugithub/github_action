@@ -28,7 +28,7 @@ jobs:
       # 设置飞书Webhooks: 进入仓库 → Settings → Webhooks → Add webhook
         uses: wangsijie/feishu-bot@v1
         with:
-          uuid: "unique-id-${{ github.run_number }}" # 保证同一条消息不会被重复发送
+          uuid: "unique-id-${{ secrets.FEISHU_UNIQUE_ID }} " # (36个字符)保证同一条消息不会被重复发送
           text: "hello image"
           data: |
             {"msg_type":"text","content":{"text":"test data from test runs"}}
