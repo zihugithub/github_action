@@ -39,7 +39,7 @@ jobs:
       #       }
 
       - name: feishu Robot Messages
-        uses: x-actions/feishu@v0.1.0
+        uses: x-actions/feishu@v1
         with:
           FEISHU_CUSTOMERBOT_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
           MSGTYPE: text
