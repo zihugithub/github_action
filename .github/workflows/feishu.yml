@@ -33,6 +33,7 @@ jobs:
 
   FEISHU_TEST:
     needs: set-env
+    id: feishu_test
     runs-on:  [self-hosted, Linux, X64, yfb_metax2]
     container:
       image: ${{ needs.set-env.outputs.ci_image }}
@@ -82,11 +83,11 @@ jobs:
           echo "当前提交的 Commit ID: ${GITHUB_SHA}"
 
   SEND_MSG_FEISHU:
-    needs: FEISHU_TEST
+    needs: feishu_test
     runs-on:  [self-hosted, Linux, X64, yfb_metax2]
     - name: Built_successfully
       uses: XRSec/feishu-bot-webhook-action@v1
-      if ${{ jobs.FEISHU_TEST.outcome }}:
+      # if ${{ jobs.feishu_test.outcome }}:
       with:
         FEISHU_BOT_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
         MSG_TEXT: >-
