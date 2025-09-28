@@ -1,4 +1,4 @@
-name: FeiShu
+name: FeiShu CI
 
 on:
   push:
@@ -49,6 +49,10 @@ jobs:
         --device=/dev/mxcd
       ports:
         - 80
+
+    outputs:
+      result: ${{ steps.build.outcome }}
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -76,25 +80,11 @@ jobs:
           echo "&#128269; Running tests..."
           EXIT_CODE=$?
           exit $EXIT_CODE
-        outputs:
-          result: ${{ steps.build.outcome }}
       
       - name: feishu
         id: test
-        # if: steps.build.outputs.result == 'success'
         run: |
-          MSG="hello flagscale"
-          # [[ -n ${{ env.feishu_webhook }} ]] || { echo "⚠️ WEBHOOK地址未配置!"; exit 1; }
-          # [[ -n ${MSG} ]] || { echo "⚠️ 消息内容不能为空！"; exit 1; }
-
-          curl -X POST ${{ secrets.FEISHU_WEBHOOK }} \
-            -H "Content-Type: application/json" \
-            -d '{
-              "msg_type": "text",
-              "content": {
-                "text": "'"${MSG}" --> ${{ steps.build.outputs.result }}'"
-              }
-            }' || echo "❌ 发送失败！"
+          echo "Build result: ${{ steps.build.outputs.result }}"
 
 
       # - name: feishu # successful
