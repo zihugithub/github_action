@@ -78,7 +78,7 @@ jobs:
         run: |
           REPO_URL=$(git config --get remote.origin.url)
           echo "提交者: ${GITHUB_ACTOR}"
-          echo "当前作业的整体状态: ${{set-env.GITHUB_ACTIONS_JOB_STATUS}}"
+          echo "当前作业的整体状态: ${{jobs.set-env.outcome}}"
           echo "获取远程仓库的 URL: ${REPO_URL}"
           echo "当前提交的 Commit ID: ${GITHUB_SHA}"
 
