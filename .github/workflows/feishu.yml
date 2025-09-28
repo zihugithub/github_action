@@ -69,16 +69,12 @@ jobs:
 
       - name: build-test
         id: build
-        outpts:
-          result: ${{ FEISHU_TEST.steps.build.outcome }}
+        outputs:
+          result: ${{ steps.build.outcome }}
         run: |
           echo "xxxxxxxxxxxxxx"
-
-  feishu-test:
-    needs: FEISHU_TEST
-    runs-on:  [self-hosted, Linux, X64, yfb_metax2]
-    steps:
-      - name: 
+      
+      - name: feishu
         id: test
         # if: steps.build.outputs.result == 'success'
         run: |
