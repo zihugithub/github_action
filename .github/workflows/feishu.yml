@@ -68,13 +68,13 @@ jobs:
           submodules: false
           set-safe-directory: true
 
-      - name: build-test
-        id: linting
-        run: 
-          echo "::set-output name=lint_passed::true"
+      # - name: build-test
+      #   id: linting
+      #   run: 
+      #     echo "::set-output name=lint_passed::true"
 
       - name: output-test
-        if: steps.linting.outputs.lint_passed
+        # if: steps.linting.outputs.lint_passed
         run: |
           REPO_URL=$(git config --get remote.origin.url)
           echo "提交者: ${GITHUB_ACTOR}"
