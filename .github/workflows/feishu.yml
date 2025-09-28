@@ -85,9 +85,9 @@ jobs:
   feishu-output:
     needs: feishu
     steps:
-      run: |
-        echo "Build result: ${{ feishu.outputs.result }}"
-
+      - name: output-test
+        run: |
+          echo "Build result: ${{ feishu.outputs.result }}"
 
       # - name: feishu # successful
       #   env:
