@@ -91,11 +91,16 @@ jobs:
       #     MSG_TEXT: >- # if 判断无效
       #       "代码已推送到仓库flagscale! 提交人: " + env.AUTHOR
 
-
-      - name: feishu # successful 变量引入text
+      - name: build-test
         id: build
+        run: |
+          echo "xxxxxxxxxxxxxx"
         outputs:
           result: ${{ steps.build.outcome }}
+
+      - name: feishu # successful 变量引入text
+        id: test
+        if: steps.build.outputs.result == 'success'
         run: |
           MSG="hello flagscale"
           # [[ -n ${{ env.feishu_webhook }} ]] || { echo "⚠️ WEBHOOK地址未配置!"; exit 1; }
@@ -106,6 +111,6 @@ jobs:
             -d '{
               "msg_type": "text",
               "content": {
-                "text": "'"${MSG}" --> ${{outputs.result}}'"
+                "text": "'"${MSG}"'"
               }
             }' || echo "❌ 发送失败！"
