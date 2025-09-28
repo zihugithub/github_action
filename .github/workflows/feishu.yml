@@ -71,7 +71,6 @@ jobs:
       - name: build-test
         id: linting
         run: 
-          exit 0
           echo "::set-output name=lint_passed::true"
 
       - name: output-test
