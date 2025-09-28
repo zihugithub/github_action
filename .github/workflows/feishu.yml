@@ -81,7 +81,7 @@ jobs:
           echo "获取远程仓库的 URL: ${REPO_URL}"
           echo "当前提交的 Commit ID: ${GITHUB_SHA}"
 
-  SEND-MSG-FEISHU:
+  SEND_MSG_FEISHU:
     needs: FEISHU_TEST
     runs-on:  [self-hosted, Linux, X64, yfb_metax2]
     - name: Built_successfully
