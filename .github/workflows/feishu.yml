@@ -83,15 +83,12 @@ jobs:
 
       - name: Send custom message to Feishu
         uses: XRSec/feishu-bot-webhook-action@v1
+        if: github.event_name == 'push'
         with:
           FEISHU_BOT_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
           MSG_TEXT: >- # if 判断无效
-            ${{ env.IS_PUSH ? (
-              "代码已推送到仓库flagscale! 提交人: " + env.AUTHOR
-            ) : (
-              "非推送事件忽略此条告警flagscale..."
-            ) }}
-        if: github.event_name == 'push'
+            "代码已推送到仓库flagscale! 提交人: " + env.AUTHOR
+        
 
       # - name: feishu # successful 变量引入text
       #   run: |
