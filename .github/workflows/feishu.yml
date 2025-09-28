@@ -76,11 +76,11 @@ jobs:
       - name: output-test
         if: steps.linting.outputs.lint_passed
         run: |
-          echo "提交者: $GITHUB_ACTOR"
-          echo "当前作业的整体状态: $GITHUB_ACTIONS_JOB_STATUS"
-          echo "上一步的摘要信息: $GITHUB_STEP_SUMMARY"
-          echo "获取远程仓库的 URL: ${{ github.repository_url }}"
-          echo "当前提交的 Commit ID: $GITHUB_SHA"
+          REPO_URL=$(git config --get remote.origin.url)
+          echo "提交者: ${GITHUB_ACTOR}"
+          echo "当前作业的整体状态: ${{set-env.GITHUB_ACTIONS_JOB_STATUS}}"
+          echo "获取远程仓库的 URL: ${REPO_URL}"
+          echo "当前提交的 Commit ID: ${GITHUB_SHA}"
 
 
 
