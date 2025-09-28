@@ -81,32 +81,33 @@ jobs:
       #         }
       #       }'
 
-      # - name: Send custom message to Feishu
-      #   uses: XRSec/feishu-bot-webhook-action@v1
-      #   with:
-      #     FEISHU_BOT_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
-      #     MSG_TEXT: >- # if 判断无效
-      #       {% if github.event_name == 'push' %}
-      #         代码已推送到仓库flagscale! 提交人: ${{ github.actor }}
-      #       {% else %}
-      #         非推送事件忽略此条告警flagscale...
-      #       {% endif %}
+      - name: Send custom message to Feishu
+        uses: XRSec/feishu-bot-webhook-action@v1
+        with:
+          FEISHU_BOT_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
+          MSG_TEXT: >- # if 判断无效
+            ${{ (github.event_name == 'push') && need('carry', default=true) ? (
+              "代码已推送到仓库flagscale! 提交人: ${{ github.actor }}"
+            ) : (
+              "非推送事件忽略此条告警flagscale..."
+            ) }}
+        if: github.event_name == 'push'
 
-      - name: feishu # successful
-        run: |
-          apt update && apt install jq -y
-          MSG="hello flagscale"
-          # [[ -n ${{ env.feishu_webhook }} ]] || { echo "⚠️ WEBHOOK地址未配置!"; exit 1; }
-          # [[ -n ${MSG} ]] || { echo "⚠️ 消息内容不能为空！"; exit 1; }
+      # - name: feishu # successful 变量引入text
+      #   run: |
+      #     apt update && apt install jq -y
+      #     MSG="hello flagscale"
+      #     # [[ -n ${{ env.feishu_webhook }} ]] || { echo "⚠️ WEBHOOK地址未配置!"; exit 1; }
+      #     # [[ -n ${MSG} ]] || { echo "⚠️ 消息内容不能为空！"; exit 1; }
 
-          deploy=$(jq -n \
-            --arg msg ${MSG}
-            '{
-              'msg_type': 'text',
-              'content': {
-                'text': "${msg}"
-              }
-            }')
+      #     deploy=$(jq -n \
+      #       --arg msg ${MSG}
+      #       '{
+      #         "msg_type": "text",
+      #         "content": {
+      #           "text": "'"${msg}"'"
+      #         }
+      #       }')
 
           curl -X POST ${{ secrets.FEISHU_WEBHOOK }} \
             -H "Content-Type: application/json" \
