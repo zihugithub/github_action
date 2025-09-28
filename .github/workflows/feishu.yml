@@ -69,13 +69,13 @@ jobs:
           set-safe-directory: true
 
       - name: build-test
-        id: build
+        id: linting
         run: 
           exit 0
           echo "::set-output name=lint_passed::true"
 
       - name: output-test
-        if: steps.build.outputs.lint_passed == "false"
+        if: steps.linting.outputs.lint_passed == "true"
         run: |
           echo "xxxxxxxxxxxxxxxx"
 
