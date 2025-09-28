@@ -69,10 +69,15 @@ jobs:
 
       - name: build-test
         id: build
+        run: 
+          set -e
+          echo "&#128295; Building project..."
+          sleep 2
+          echo "&#128269; Running tests..."
+          EXIT_CODE=$?
+          exit $EXIT_CODE
         outputs:
           result: ${{ steps.build.outcome }}
-        run: |
-          echo "xxxxxxxxxxxxxx"
       
       - name: feishu
         id: test
