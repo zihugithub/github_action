@@ -70,6 +70,7 @@ jobs:
       # - name: feishu # successful
       #   env:
       #     feishu_webhook: ${{ secrets.FEISHU_WEBHOOK }}
+      #   outputs:
       #   run: |
       #     echo ${{ env.feishu_webhook }}
       #     curl -X POST ${{ env.feishu_webhook }} \
@@ -81,31 +82,33 @@ jobs:
       #         }
       #       }'
 
-      - name: Send custom message to Feishu
-        uses: XRSec/feishu-bot-webhook-action@v1
-        if: github.event_name == 'push'
-        with:
-          FEISHU_BOT_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
-          MSG_TEXT: >- # if 判断无效
-            "代码已推送到仓库flagscale! 提交人: " + env.AUTHOR
-        
+      # - name: Send custom message to Feishu
+      #   id: test
+      #   uses: XRSec/feishu-bot-webhook-action@v1
+      #   if: "steps.build.outcome"
+      #   with:
+      #     FEISHU_BOT_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
+      #     MSG_TEXT: >- # if 判断无效
+      #       "代码已推送到仓库flagscale! 提交人: " + env.AUTHOR
 
-      # - name: feishu # successful 变量引入text
-      #   run: |
-      #     apt update && apt install jq -y
-      #     MSG="hello flagscale"
-      #     # [[ -n ${{ env.feishu_webhook }} ]] || { echo "⚠️ WEBHOOK地址未配置!"; exit 1; }
-      #     # [[ -n ${MSG} ]] || { echo "⚠️ 消息内容不能为空！"; exit 1; }
 
-      #     deploy=$(jq -n \
-      #       --arg msg ${MSG}
-      #       '{
-      #         "msg_type": "text",
-      #         "content": {
-      #           "text": "'"${msg}"'"
-      #         }
-      #       }')
+      - name: feishu # successful 变量引入text
+        id: build
+        outputs:
+          result: ${{ steps.build.outcome }}
+        run: |
+          apt update && apt install jq -y
+          MSG="hello flagscale"
+          # [[ -n ${{ env.feishu_webhook }} ]] || { echo "⚠️ WEBHOOK地址未配置!"; exit 1; }
+          # [[ -n ${MSG} ]] || { echo "⚠️ 消息内容不能为空！"; exit 1; }
 
-          # curl -X POST ${{ secrets.FEISHU_WEBHOOK }} \
-          #   -H "Content-Type: application/json" \
-          #   -d ${deploy} || echo "❌ 发送失败！"
+          deploy='{
+              "msg_type": "text",
+              "content": {
+                "text": "'"${msg}" --> ${{outputs.result}}'"
+              }
+            }'
+
+          curl -X POST ${{ secrets.FEISHU_WEBHOOK }} \
+            -H "Content-Type: application/json" \
+            -d ${deploy} || echo "❌ 发送失败！"
