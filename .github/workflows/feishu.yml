@@ -33,7 +33,6 @@ jobs:
 
   FEISHU_TEST:
     needs: set-env
-    id: hi-feishu
     runs-on:  [self-hosted, Linux, X64, yfb_metax2]
     container:
       image: ${{ needs.set-env.outputs.ci_image }}
@@ -50,9 +49,6 @@ jobs:
         --device=/dev/mxcd
       ports:
         - 80
-
-    outputs:
-      result: ${{ steps.build.outcome }}
 
     steps:
       - name: Checkout Code
@@ -75,19 +71,13 @@ jobs:
       - name: build-test
         id: build
         run: 
-          set -e
-          echo "&#128295; Building project..."
-          sleep 2
-          echo "&#128269; Running tests..."
-          EXIT_CODE=$?
-          exit $EXIT_CODE
+          exit 0
+        echo "::set-output name=lint_passed::true"
 
-  feishu-output:
-    needs: hi-feishu
-    steps:
       - name: output-test
+        if: steps.build.outputs.lint_passed == "true"
         run: |
-          echo "Build result: ${{ hi-feishu.outputs.result }}"
+          echo "xxxxxxxxxxxxxxxx"
 
       # - name: feishu # successful
       #   env:
