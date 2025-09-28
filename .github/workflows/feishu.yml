@@ -13,29 +13,23 @@ concurrency:
 jobs:
   set-env:
     runs-on: ubuntu-latest
-    # outputs:
-    #   ci_image: ${{ steps.set-image.outputs.ci_image }} # Declare output variable
-    #   test_tasks: ${{ steps.set-tasks.outputs.test_tasks }}
-    #   test_type: ${{ steps.set-type.outputs.test_type }}
+    outputs:
+      ci_image: ${{ steps.set-image.outputs.ci_image }} # Declare output variable
+      test_tasks: ${{ steps.set-tasks.outputs.test_tasks }}
+      test_type: ${{ steps.set-type.outputs.test_type }}
     steps:
-      # - name: Set CI base Image
-      #   id: set-image
-      #   run: |
-      #     echo "ci_image=localhost:5000/flagscale:maca.ai2.33.0.13-torch2.6-py310-ubuntu22.04-amd64-time2508051515" >> $GITHUB_OUTPUT  # Set output variable
-      # - name: Set Test Tasks
-      #   id: set-tasks
-      #   run: |
-      #     echo "test_tasks=deepseek_r1_distill_qwen-metax,opi_llama3_1_instruct-metax,opi_llama3_1_instruct-flaggems-metax,qwen3-metax,qwen3-flaggems-metax" >> $GITHUB_OUTPUT
-      # - name: Set Test Type
-      #   id: set-type
-      #   run: |
-      #     echo "test_type=inference" >> $GITHUB_OUTPUT
-      run: |
-        image="localhost:5000/flagscale:maca.ai2.33.0.13-torch2.6-py310-ubuntu22.04-amd64-time2508051515"
-        test_tasks=[ "deepseek_r1_distill_qwen-metax", "opi_llama3_1_instruct-metax", "opi_llama3_1_instruct-flaggems-metax", "qwen3-metax", "qwen3-flaggems-metax" ]
-        echo "::set-output name=ci_image::${image}"
-        echo "::set-output name=test_tasks::${test_tasks}"
-        echo "::set-output name=test_type::inference"
+      - name: Set CI base Image
+        id: set-image
+        run: |
+          echo "ci_image=localhost:5000/flagscale:maca.ai2.33.0.13-torch2.6-py310-ubuntu22.04-amd64-time2508051515" >> $GITHUB_OUTPUT  # Set output variable
+      - name: Set Test Tasks
+        id: set-tasks
+        run: |
+          echo "test_tasks=deepseek_r1_distill_qwen-metax,opi_llama3_1_instruct-metax,opi_llama3_1_instruct-flaggems-metax,qwen3-metax,qwen3-flaggems-metax" >> $GITHUB_OUTPUT
+      - name: Set Test Type
+        id: set-type
+        run: |
+          echo "test_type=inference" >> $GITHUB_OUTPUT
 
   FEISHU_TEST:
     needs: set-env
@@ -82,7 +76,8 @@ jobs:
       - name: output-test
         if: steps.linting.outputs.lint_passed
         run: |
-          echo "xxxxxxxxxxxxxxxx"
+          echo "提交者: $GITHUB_ACTOR"
+
 
       # - name: feishu # successful
       #   env:
