@@ -84,7 +84,7 @@ jobs:
       - name: feishu
         id: test
         run: |
-          echo "Build result: ${{ FEISHU_TEST.outputs.result }}"
+          echo "Build result: ${{ outputs.result }}"
 
 
       # - name: feishu # successful
