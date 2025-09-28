@@ -33,6 +33,7 @@ jobs:
 
   FEISHU_TEST:
     needs: set-env
+    id: feishu
     runs-on:  [self-hosted, Linux, X64, yfb_metax2]
     container:
       image: ${{ needs.set-env.outputs.ci_image }}
@@ -80,11 +81,11 @@ jobs:
           echo "&#128269; Running tests..."
           EXIT_CODE=$?
           exit $EXIT_CODE
-      
-      - name: feishu
-        id: test
-        run: |
-          echo "Build result: ${{ outputs.result }}"
+
+  feishu-output:
+    needs: feishu
+    run: |
+      echo "Build result: ${{ feishu.outputs.result }}"
 
 
       # - name: feishu # successful
