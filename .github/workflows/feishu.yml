@@ -78,10 +78,19 @@ jobs:
         run: |
           REPO_URL=$(git config --get remote.origin.url)
           echo "提交者: ${GITHUB_ACTOR}"
-          echo "当前作业的整体状态: ${{set-env.outcome}}"
           echo "获取远程仓库的 URL: ${REPO_URL}"
           echo "当前提交的 Commit ID: ${GITHUB_SHA}"
 
+  SEND-MSG-FEISHU:
+    needs: FEISHU_TEST
+    runs-on:  [self-hosted, Linux, X64, yfb_metax2]
+    uses: XRSec/feishu-bot-webhook-action@v1
+    with:
+      FEISHU_BOT_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
+      MSG_TEXT: >-
+        ### 代码已推送到仓库flagscale
+        **提交者:** ${GITHUB_ACTOR}
+        
 
 
       # - name: feishu # successful
