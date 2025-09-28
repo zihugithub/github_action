@@ -75,7 +75,7 @@ jobs:
           echo "::set-output name=lint_passed::true"
 
       - name: output-test
-        if: steps.build.outputs.lint_passed == "true"
+        if: steps.build.outputs.lint_passed == "false"
         run: |
           echo "xxxxxxxxxxxxxxxx"
 
