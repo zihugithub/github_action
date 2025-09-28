@@ -86,9 +86,9 @@ jobs:
         with:
           FEISHU_BOT_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
           MSG_TEXT: >- # if 判断无效
-            ${{ (github.event_name == 'push') && need('carry', default=true) ? (
+            ${{ if (github.event_name == 'push') then (
               "代码已推送到仓库flagscale! 提交人: ${{ github.actor }}"
-            ) : (
+            ) else (
               "非推送事件忽略此条告警flagscale..."
             ) }}
         if: github.event_name == 'push'
