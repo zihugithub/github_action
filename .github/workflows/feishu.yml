@@ -98,7 +98,11 @@ jobs:
         run: |
           echo "xxxxxxxxxxxxxx"
 
-      - name: feishu # successful 变量引入text
+  feishu-test:
+    needs: FEISHU_TEST
+    runs-on:  [self-hosted, Linux, X64, yfb_metax2]
+    steps:
+      - name: 
         id: test
         # if: steps.build.outputs.result == 'success'
         run: |
