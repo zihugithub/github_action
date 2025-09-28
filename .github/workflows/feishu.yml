@@ -93,14 +93,14 @@ jobs:
 
       - name: build-test
         id: build
-        run: |
-          echo "xxxxxxxxxxxxxx"
         outputs: >-
           result: ${{ steps.build.outcome }}
+        run: |
+          echo "xxxxxxxxxxxxxx"
 
       - name: feishu # successful 变量引入text
         id: test
-        if: steps.build.outputs.result == 'success'
+        # if: steps.build.outputs.result == 'success'
         run: |
           MSG="hello flagscale"
           # [[ -n ${{ env.feishu_webhook }} ]] || { echo "⚠️ WEBHOOK地址未配置!"; exit 1; }
@@ -111,6 +111,6 @@ jobs:
             -d '{
               "msg_type": "text",
               "content": {
-                "text": "'"${MSG}"'"
+                "text": "'"${MSG}" --> ${{ steps.build.outputs.result }}'"
               }
             }' || echo "❌ 发送失败！"
