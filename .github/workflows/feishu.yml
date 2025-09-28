@@ -95,7 +95,7 @@ jobs:
         id: build
         run: |
           echo "xxxxxxxxxxxxxx"
-        outputs:
+        outputs: >-
           result: ${{ steps.build.outcome }}
 
       - name: feishu # successful 变量引入text
