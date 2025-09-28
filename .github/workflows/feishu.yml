@@ -109,6 +109,6 @@ jobs:
       #         }
       #       }')
 
-          curl -X POST ${{ secrets.FEISHU_WEBHOOK }} \
-            -H "Content-Type: application/json" \
-            -d ${deploy} || echo "❌ 发送失败！"
+          # curl -X POST ${{ secrets.FEISHU_WEBHOOK }} \
+          #   -H "Content-Type: application/json" \
+          #   -d ${deploy} || echo "❌ 发送失败！"
