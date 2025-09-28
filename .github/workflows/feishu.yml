@@ -97,18 +97,15 @@ jobs:
         outputs:
           result: ${{ steps.build.outcome }}
         run: |
-          apt update && apt install jq -y
           MSG="hello flagscale"
           # [[ -n ${{ env.feishu_webhook }} ]] || { echo "⚠️ WEBHOOK地址未配置!"; exit 1; }
           # [[ -n ${MSG} ]] || { echo "⚠️ 消息内容不能为空！"; exit 1; }
 
-          deploy='{
-              "msg_type": "text",
-              "content": {
-                "text": "'"${msg}" --> ${{outputs.result}}'"
-              }
-            }'
-
           curl -X POST ${{ secrets.FEISHU_WEBHOOK }} \
             -H "Content-Type: application/json" \
-            -d ${deploy} || echo "❌ 发送失败！"
+            -d '{
+              "msg_type": "text",
+              "content": {
+                "text": "'"${MSG}" --> ${{outputs.result}}'"
+              }
+            }' || echo "❌ 发送失败！"
