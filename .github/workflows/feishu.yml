@@ -67,6 +67,35 @@ jobs:
           submodules: false
           set-safe-directory: true
 
+      - name: build-test
+        id: build
+        outpts:
+          result: ${{ FEISHU_TEST.steps.build.outcome }}
+        run: |
+          echo "xxxxxxxxxxxxxx"
+
+  feishu-test:
+    needs: FEISHU_TEST
+    runs-on:  [self-hosted, Linux, X64, yfb_metax2]
+    steps:
+      - name: 
+        id: test
+        # if: steps.build.outputs.result == 'success'
+        run: |
+          MSG="hello flagscale"
+          # [[ -n ${{ env.feishu_webhook }} ]] || { echo "⚠️ WEBHOOK地址未配置!"; exit 1; }
+          # [[ -n ${MSG} ]] || { echo "⚠️ 消息内容不能为空！"; exit 1; }
+
+          curl -X POST ${{ secrets.FEISHU_WEBHOOK }} \
+            -H "Content-Type: application/json" \
+            -d '{
+              "msg_type": "text",
+              "content": {
+                "text": "'"${MSG}" --> ${{ steps.build.outputs.result }}'"
+              }
+            }' || echo "❌ 发送失败！"
+
+
       # - name: feishu # successful
       #   env:
       #     feishu_webhook: ${{ secrets.FEISHU_WEBHOOK }}
@@ -91,30 +120,3 @@ jobs:
       #     MSG_TEXT: >- # if 判断无效
       #       "代码已推送到仓库flagscale! 提交人: " + env.AUTHOR
 
-      - name: build-test
-        id: build
-        outputs: >-
-          result: ${{ steps.build.outcome }}
-        run: |
-          echo "xxxxxxxxxxxxxx"
-
-  feishu-test:
-    needs: FEISHU_TEST
-    runs-on:  [self-hosted, Linux, X64, yfb_metax2]
-    steps:
-      - name: 
-        id: test
-        # if: steps.build.outputs.result == 'success'
-        run: |
-          MSG="hello flagscale"
-          # [[ -n ${{ env.feishu_webhook }} ]] || { echo "⚠️ WEBHOOK地址未配置!"; exit 1; }
-          # [[ -n ${MSG} ]] || { echo "⚠️ 消息内容不能为空！"; exit 1; }
-
-          curl -X POST ${{ secrets.FEISHU_WEBHOOK }} \
-            -H "Content-Type: application/json" \
-            -d '{
-              "msg_type": "text",
-              "content": {
-                "text": "'"${MSG}" --> ${{ steps.build.outputs.result }}'"
-              }
-            }' || echo "❌ 发送失败！"
