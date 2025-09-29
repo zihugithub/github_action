@@ -122,10 +122,6 @@ jobs:
                     {"tag":"text","text":"提交者 :"},
                     {"tag":"at","user_id":"${GITHUB_SHA}","user_name":"${GITHUB_ACTOR}"}
                   ],
-                  # [
-                  #   {"tag":"text","text":"当前提交的 Commit ID: ${GITHUB_SHA}"},
-                  #   {"tag":"at","user_id":"all","user_name":"所有人"}
-                  # ],
                 ]
               }
             }
@@ -134,6 +130,10 @@ jobs:
 
 
 
+                  # [
+                  #   {"tag":"text","text":"当前提交的 Commit ID: ${GITHUB_SHA}"},
+                  #   {"tag":"at","user_id":"all","user_name":"所有人"}
+                  # ],
       
 
       # - name: Send custom message to Feishu
