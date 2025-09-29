@@ -80,22 +80,18 @@ jobs:
           echo "获取远程仓库的 URL: ${{ github.repository_url }}"
           echo "当前提交的 Commit ID: ${GITHUB_SHA}"
       
-      - name: feishu # successful
-        env:
-          feishu_webhook: ${{ secrets.FEISHU_WEBHOOK }}
-        run: |
-          curl -X POST ${{ env.feishu_webhook }} \
-            -H "Content-Type: application/json" \
-            -d '{
-              "msg_type": "text",
-              "content": {
-                "text": """
-                hello flagscale (metax)
-                11111
-                2222
-                """
-              }
-            }'
+      # - name: feishu # successful
+      #   env:
+      #     feishu_webhook: ${{ secrets.FEISHU_WEBHOOK }}
+      #   run: |
+      #     curl -X POST ${{ env.feishu_webhook }} \
+      #       -H "Content-Type: application/json" \
+      #       -d '{
+      #         "msg_type": "text",
+      #         "content": {
+      #           "text": "hello flagscale (metax)"
+      #         }
+      #       }' 
 
   # SEND_MSG_FEISHU:
   #   needs: FEISHU_TEST
@@ -108,15 +104,24 @@ jobs:
   #         FEISHU_BOT_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
   #         MSG_TEXT: >-
   #           ### 代码已推送到仓库 flagscale
-  #           **提交者:** ${GITHUB_ACTOR}
+  #           **提交者:**  @${{ steps.show_committer.outputs.COMMITTER_USERNAME }}
   #           获取远程仓库的 URL: ${{ github.repository_url }}
 
-  #     - name: Failed_to_run
-  #       uses: XRSec/feishu-bot-webhook-action@v1
-  #       with:
-  #         FEISHU_BOT_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
-  #         MSG_TEXT: >-
-  #           hello flagscale
+
+      - name: Send Feishu notification
+        uses: actions/http-client@v2
+        with:
+          url: ${{ secrets.FEISHU_WEBHOOK }}
+          headers: |
+            Content-Type: application/json
+          data: |
+            {
+              "msg_type": "text",
+              "content": {
+                "text": "flagscale新代码由 @${{ steps.show_committer.outputs.COMMITTER_USERNAME }} 提交！"
+              }
+            }
+
 
 
 
