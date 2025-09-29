@@ -109,18 +109,11 @@ jobs:
 
 
       - name: Send Feishu notification
-        uses: actions/http-client@v2
+        uses: xavier/feishu-message-action@v1
         with:
-          url: ${{ secrets.FEISHU_WEBHOOK }}
-          headers: |
-            Content-Type: application/json
-          data: |
-            {
-              "msg_type": "text",
-              "content": {
-                "text": "flagscale新代码由 @${{ steps.show_committer.outputs.COMMITTER_USERNAME }} 提交！"
-              }
-            }
+          webhook: ${{ secrets.FEISHU_WEBHOOK }}
+          type: post
+          message: '{"post":{"zh_cn":{"title":"我是一个flagscale标题","content":[[{"tag":"text","text":"第一行 :"},{"tag":"at","user_id":"ou_xxxxxx","user_name":"tom"}],[{"tag":"text","text":"第二行:"},{"tag":"at","user_id":"all","user_name":"所有人"}]]}}}'
 
 
 
