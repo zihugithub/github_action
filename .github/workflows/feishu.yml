@@ -118,8 +118,14 @@ jobs:
               "zh_cn":{
                 "title":"我是一个flagscale标题",
                 "content":[
-                  [{"tag":"text","text":"提交者: ${GITHUB_ACTOR} :"},{"tag":"at","user_id":"ou_xxxxxx","user_name":"tom"}],
-                  [{"tag":"text","text":"当前提交的 Commit ID: ${GITHUB_SHA}"},{"tag":"at","user_id":"all","user_name":"所有人"}]
+                  [
+                    {"tag":"text","text":"提交者 :"},
+                    {"tag":"at","user_id":"${GITHUB_SHA}","user_name":"${GITHUB_ACTOR}"}
+                  ],
+                  # [
+                  #   {"tag":"text","text":"当前提交的 Commit ID: ${GITHUB_SHA}"},
+                  #   {"tag":"at","user_id":"all","user_name":"所有人"}
+                  # ],
                 ]
               }
             }
