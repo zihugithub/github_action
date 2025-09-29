@@ -11,103 +11,80 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  set-env:
-    runs-on: ubuntu-latest
-    outputs:
-      ci_image: ${{ steps.set-image.outputs.ci_image }} # Declare output variable
-      test_tasks: ${{ steps.set-tasks.outputs.test_tasks }}
-      test_type: ${{ steps.set-type.outputs.test_type }}
-    steps:
-      - name: Set CI base Image
-        id: set-image
-        run: |
-          echo "ci_image=localhost:5000/flagscale:maca.ai2.33.0.13-torch2.6-py310-ubuntu22.04-amd64-time2508051515" >> $GITHUB_OUTPUT  # Set output variable
-      - name: Set Test Tasks
-        id: set-tasks
-        run: |
-          echo "test_tasks=deepseek_r1_distill_qwen-metax,opi_llama3_1_instruct-metax,opi_llama3_1_instruct-flaggems-metax,qwen3-metax,qwen3-flaggems-metax" >> $GITHUB_OUTPUT
-      - name: Set Test Type
-        id: set-type
-        run: |
-          echo "test_type=inference" >> $GITHUB_OUTPUT
-
-  FEISHU_TEST:
-    needs: set-env
-    runs-on:  [self-hosted, Linux, X64, yfb_metax2]
-    container:
-      image: ${{ needs.set-env.outputs.ci_image }}
-      options: >-
-        --ipc=host
-        --privileged=true
-        --group-add video
-        --shm-size 100gb
-        --hostname flagscale_cicd
-        --user root
-        --ulimit nofile=65535:65535
-        --ulimit memlock=-1
-        --device=/dev/dri
-        --device=/dev/mxcd
-      ports:
-        - 80
-
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-        with:
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-          ref: ${{ github.event.pull_request.head.ref }}
-          fetch-depth: 0
-          ssh-strict: true
-          ssh-user: git
-          persist-credentials: true
-          clean: true
-          sparse-checkout-cone-mode: true
-          fetch-tags: false
-          show-progress: true
-          lfs: false
-          submodules: false
-          set-safe-directory: true
-
-      - name: build-test
-        id: linting
-        run: 
-          echo "::set-output name=lint_passed::true"
-
-      - name: output-test
-        if: steps.linting.outputs.lint_passed
-        run: |
-          echo "提交者: ${GITHUB_ACTOR}"
-          echo "获取远程仓库的 URL: ${{ github.repository_url }}"
-          echo "当前提交的 Commit ID: ${GITHUB_SHA}"
-      
-      # - name: feishu # successful
-      #   env:
-      #     feishu_webhook: ${{ secrets.FEISHU_WEBHOOK }}
-      #   run: |
-      #     curl -X POST ${{ env.feishu_webhook }} \
-      #       -H "Content-Type: application/json" \
-      #       -d '{
-      #         "msg_type": "text",
-      #         "content": {
-      #           "text": "hello flagscale (metax)"
-      #         }
-      #       }' 
-
-  # SEND_MSG_FEISHU:
-  #   needs: FEISHU_TEST
-  #   runs-on:  [self-hosted, Linux, X64, yfb_metax2]
+  # set-env:
+  #   runs-on: ubuntu-latest
+  #   outputs:
+  #     ci_image: ${{ steps.set-image.outputs.ci_image }} # Declare output variable
+  #     test_tasks: ${{ steps.set-tasks.outputs.test_tasks }}
+  #     test_type: ${{ steps.set-type.outputs.test_type }}
   #   steps:
-  #     - name: Built_successfully
-  #       uses: XRSec/feishu-bot-webhook-action@v1
-  #       # if ${{ jobs.feishu_test.outcome }}:
+  #     - name: Set CI base Image
+  #       id: set-image
+  #       run: |
+  #         echo "ci_image=localhost:5000/flagscale:maca.ai2.33.0.13-torch2.6-py310-ubuntu22.04-amd64-time2508051515" >> $GITHUB_OUTPUT  # Set output variable
+  #     - name: Set Test Tasks
+  #       id: set-tasks
+  #       run: |
+  #         echo "test_tasks=deepseek_r1_distill_qwen-metax,opi_llama3_1_instruct-metax,opi_llama3_1_instruct-flaggems-metax,qwen3-metax,qwen3-flaggems-metax" >> $GITHUB_OUTPUT
+  #     - name: Set Test Type
+  #       id: set-type
+  #       run: |
+  #         echo "test_type=inference" >> $GITHUB_OUTPUT
+
+  # FEISHU_TEST:
+  #   needs: set-env
+  #   runs-on:  [self-hosted, Linux, X64, yfb_metax2]
+  #   container:
+  #     image: ${{ needs.set-env.outputs.ci_image }}
+  #     options: >-
+  #       --ipc=host
+  #       --privileged=true
+  #       --group-add video
+  #       --shm-size 100gb
+  #       --hostname flagscale_cicd
+  #       --user root
+  #       --ulimit nofile=65535:65535
+  #       --ulimit memlock=-1
+  #       --device=/dev/dri
+  #       --device=/dev/mxcd
+  #     ports:
+  #       - 80
+
+  #   steps:
+  #     - name: Checkout Code
+  #       uses: actions/checkout@v4
   #       with:
-  #         FEISHU_BOT_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
-  #         MSG_TEXT: >-
-  #           ### 代码已推送到仓库 flagscale
-  #           **提交者:**  @${{ steps.show_committer.outputs.COMMITTER_USERNAME }}
-  #           获取远程仓库的 URL: ${{ github.repository_url }}
+  #         repository: ${{ github.event.pull_request.head.repo.full_name }}
+  #         ref: ${{ github.event.pull_request.head.ref }}
+  #         fetch-depth: 0
+  #         ssh-strict: true
+  #         ssh-user: git
+  #         persist-credentials: true
+  #         clean: true
+  #         sparse-checkout-cone-mode: true
+  #         fetch-tags: false
+  #         show-progress: true
+  #         lfs: false
+  #         submodules: false
+  #         set-safe-directory: true
 
-
+  #     - name: Setup Environment Info
+  #       run: |
+  #         echo "USER: $USER"
+  #         echo "UID: $(id -u)"
+  #         echo "GID: $(id -g)"
+  #         echo "Home: $HOME"
+  #         echo "PWD: ${PWD}"
+      
+  #     - name: Save running container as image
+  #       run: |
+  #         CONTAINER_ID=$(docker ps --filter "ancestor=${{ needs.set-env.outputs.ci_image }}" --format="{{.ID}}")
+  #         NEW_IMAGE_NAME="localhost:5000/saved_containers/flagscale:$(date +%Y%m%d_%H%M%S)_${GITHUB_SHA::7}"
+  #         # docker commit $CONTAINER_ID $NEW_IMAGE_NAME
+  #         echo "CONTAINER_ID: ${CONTAINER_ID}\nNEW_IMAGE_NAME: ${NEW_IMAGE_NAME}"
+      
+  SEND_FEISHU:
+    steps:
       - name: Send Feishu notification
         uses: NewGr8Player/feishu-message-action@v1
         with:
@@ -149,13 +126,3 @@ jobs:
                   #     }
                   #   }
                   # ]
-
-      # - name: Send custom message to Feishu
-      #   id: test
-      #   uses: XRSec/feishu-bot-webhook-action@v1
-      #   if: "steps.build.outcome"
-      #   with:
-      #     FEISHU_BOT_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
-      #     MSG_TEXT: >- # if 判断无效
-      #       "代码已推送到仓库flagscale! 提交人: " + env.AUTHOR
-
