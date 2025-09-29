@@ -84,6 +84,7 @@ jobs:
   #         echo "CONTAINER_ID: ${CONTAINER_ID}\nNEW_IMAGE_NAME: ${NEW_IMAGE_NAME}"
       
   SEND_FEISHU:
+    runs-on:  [self-hosted, Linux, X64, yfb_metax2]
     steps:
       - name: Send Feishu notification
         uses: NewGr8Player/feishu-message-action@v1
