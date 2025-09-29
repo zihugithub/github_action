@@ -81,6 +81,7 @@ jobs:
           echo "当前提交的 Commit ID: ${GITHUB_SHA}"
 
   SEND_MSG_FEISHU:
+    needs: FEISHU_TEST
     runs-on:  [self-hosted, Linux, X64, yfb_metax2]
     steps:
       - name: Built_successfully
@@ -90,7 +91,7 @@ jobs:
           FEISHU_BOT_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
           MSG_TEXT: >-
             ### 代码已推送到仓库 flagscale
-            **提交者:** ${GITHUB_ACTOR}
+            **提交者:** ${{GITHUB_ACTOR}}
             获取远程仓库的 URL: ${{ github.repository_url }}
 
       - name: Failed_to_run
