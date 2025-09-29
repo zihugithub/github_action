@@ -79,44 +79,47 @@ jobs:
           echo "提交者: ${GITHUB_ACTOR}"
           echo "获取远程仓库的 URL: ${{ github.repository_url }}"
           echo "当前提交的 Commit ID: ${GITHUB_SHA}"
-
-  SEND_MSG_FEISHU:
-    needs: FEISHU_TEST
-    runs-on:  [self-hosted, Linux, X64, yfb_metax2]
-    steps:
-      - name: Built_successfully
-        uses: XRSec/feishu-bot-webhook-action@v1
-        # if ${{ jobs.feishu_test.outcome }}:
+      
+      - name: feishu # successful
+        env:
+          feishu_webhook: ${{ secrets.FEISHU_WEBHOOK }}
         with:
-          FEISHU_BOT_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
-          MSG_TEXT: >-
-            ### 代码已推送到仓库 flagscale
-            **提交者:** ${{GITHUB_ACTOR}}
-            获取远程仓库的 URL: ${{ github.repository_url }}
+          deploy: '{
+            "msg_type": "text",
+            "content": {
+              "text": "hello flagscale (metax)"
+            }
+          }'
 
-      - name: Failed_to_run
-        uses: XRSec/feishu-bot-webhook-action@v1
-        with:
-          FEISHU_BOT_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
-          MSG_TEXT: >-
-            hello flagscale
+        run: |
+          curl -X POST ${{ env.feishu_webhook }} \
+            -H "Content-Type: application/json" \
+            -d ${{steps.feishu.with.deploy}}
+
+  # SEND_MSG_FEISHU:
+  #   needs: FEISHU_TEST
+  #   runs-on:  [self-hosted, Linux, X64, yfb_metax2]
+  #   steps:
+  #     - name: Built_successfully
+  #       uses: XRSec/feishu-bot-webhook-action@v1
+  #       # if ${{ jobs.feishu_test.outcome }}:
+  #       with:
+  #         FEISHU_BOT_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
+  #         MSG_TEXT: >-
+  #           ### 代码已推送到仓库 flagscale
+  #           **提交者:** ${GITHUB_ACTOR}
+  #           获取远程仓库的 URL: ${{ github.repository_url }}
+
+  #     - name: Failed_to_run
+  #       uses: XRSec/feishu-bot-webhook-action@v1
+  #       with:
+  #         FEISHU_BOT_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
+  #         MSG_TEXT: >-
+  #           hello flagscale
 
 
 
-      # - name: feishu # successful
-      #   env:
-      #     feishu_webhook: ${{ secrets.FEISHU_WEBHOOK }}
-      #   outputs:
-      #   run: |
-      #     echo ${{ env.feishu_webhook }}
-      #     curl -X POST ${{ env.feishu_webhook }} \
-      #       -H "Content-Type: application/json" \
-      #       -d '{
-      #         "msg_type": "text",
-      #         "content": {
-      #           "text": "hello image (metax)"
-      #         }
-      #       }'
+      
 
       # - name: Send custom message to Feishu
       #   id: test
