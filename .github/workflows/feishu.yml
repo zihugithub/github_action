@@ -120,21 +120,6 @@ jobs:
                 "content":[
                   [
                     {"tag":"text","text":"本次构建状态: ${RESULT==0?}"},
-                  ],
-                  [
-                    { "tag": "action", "actions": [
-                      "text": "查看详情",
-                      "openLink": true,
-                      "url": "https://th.bing.com/th/id/R.987f582c510be58755c4933cda68d525?rik=C0D21hJDYvXosw&riu=http%3a%2f%2fimg.pconline.com.cn%2fimages%2fupload%2fupc%2ftx%2fwallpaper%2f1305%2f16%2fc4%2f20990657_1368686545122.jpg&ehk=netN2qzcCVS4ALUQfDOwxAwFcy41oxC%2b0xTFvOYy5ds%3d&risl=&pid=ImgRaw&r=0"
-                    },
-                    {
-                      "text": "回滚版本",
-                      "callback": {
-                        "type": "event",
-                        "eventType": "message.update",
-                        "params": { "op": "rollback" }
-                      }
-                    }
                   ]
                 ]
               }
@@ -149,6 +134,21 @@ jobs:
                   #   {"tag":"at","user_id":"all","user_name":"所有人"}
                   # ],
       
+                  # [
+                  #   { "tag": "action", "actions": [
+                  #     "text": "查看详情",
+                  #     "openLink": true,
+                  #     "url": "https://th.bing.com/th/id/R.987f582c510be58755c4933cda68d525?rik=C0D21hJDYvXosw&riu=http%3a%2f%2fimg.pconline.com.cn%2fimages%2fupload%2fupc%2ftx%2fwallpaper%2f1305%2f16%2fc4%2f20990657_1368686545122.jpg&ehk=netN2qzcCVS4ALUQfDOwxAwFcy41oxC%2b0xTFvOYy5ds%3d&risl=&pid=ImgRaw&r=0"
+                  #   },
+                  #   {
+                  #     "text": "回滚版本",
+                  #     "callback": {
+                  #       "type": "event",
+                  #       "eventType": "message.update",
+                  #       "params": { "op": "rollback" }
+                  #     }
+                  #   }
+                  # ]
 
       # - name: Send custom message to Feishu
       #   id: test
