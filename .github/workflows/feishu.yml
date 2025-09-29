@@ -83,18 +83,19 @@ jobs:
       - name: feishu # successful
         env:
           feishu_webhook: ${{ secrets.FEISHU_WEBHOOK }}
-        with:
-          deploy: '{
-            "msg_type": "text",
-            "content": {
-              "text": "hello flagscale (metax)"
-            }
-          }'
-
         run: |
           curl -X POST ${{ env.feishu_webhook }} \
             -H "Content-Type: application/json" \
-            -d ${{steps.feishu.with.deploy}}
+            -d '{
+              "msg_type": "text",
+              "content": {
+                "text": """
+                hello flagscale (metax)
+                11111
+                2222
+                """
+              }
+            }'
 
   # SEND_MSG_FEISHU:
   #   needs: FEISHU_TEST
