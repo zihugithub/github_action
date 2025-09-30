@@ -115,8 +115,8 @@ jobs:
                     {"tag":"text","text":"${{ github.repo }}#${{ github.sha }} → 仓库名+提交哈希"}
                   ],
                   [
-                    {"tag":"text","text":"触发事件的登录名: ${{ github.event.head_commit.author.name }} (Email: ${{ github.event.head_commit.author.email }})""}
-                  ],
+                    {"tag":"text","text":"触发事件的登录名: ${{ github.event.head_commit.author.name }} (Email: ${{ github.event.head_commit.author.email }})"}
+                  ]
                 ]
               }
             }
