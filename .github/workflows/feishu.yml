@@ -78,11 +78,12 @@ jobs:
       
       - name: Save running container as image
         run: |
+          exit
           CONTAINER_ID=$(/usr/bin/docker ps --filter "ancestor=${{ needs.set-env.outputs.ci_image }}" --format="{{.ID}}")
           NEW_IMAGE_NAME="localhost:5000/saved_containers/flagscale:$(date +%Y%m%d_%H%M%S)_${GITHUB_SHA::7}"
           # /usr/bin/docker commit $CONTAINER_ID $NEW_IMAGE_NAME
           echo "CONTAINER_ID: ${CONTAINER_ID}\nNEW_IMAGE_NAME: ${NEW_IMAGE_NAME}"
-      
+
   SEND_FEISHU:
     needs: BUILD_IMAGE
     runs-on:  [self-hosted, Linux, X64, yfb_metax2]
