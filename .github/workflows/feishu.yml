@@ -86,17 +86,17 @@ jobs:
   SEND_FEISHU:
     runs-on:  [self-hosted, Linux, X64, yfb_metax2]
     steps:
-      # - name: Checkout code & prepare env vars
-      #   uses: actions/checkout@v4
-      #   with:
-      #     workflow: ${{ github.workflow }}
-      #     status: ${{ job.status }}
-      #     repo_url: https://github.com/${{ github.repository }}.git
-      #     branch: ${{ github.event.pull_request.head.ref }}
-      #     commit: ${{ github.sha }}
-      #     author: ${{ github.event.head_commit.author.name }}
-      #     email: ${{ github.event.head_commit.author.email }}
-      #     persist-credentials: false
+      - name: Checkout code & prepare env vars
+        uses: actions/checkout@v4
+        run: |
+          env \
+            GITHUB_WORKFLOW="${{ github.workflow }}"
+            JOB_STATUS="${{ job.status }}"
+            REPO_URL="https://github.com/${{ github.repository }}.git"
+            BRANCH_TARGET=${{ github.event.pull_request.head.ref }}
+            GITHUB_SHA="${{ github.sha }}"
+            AUTHOR_NAME="${{ github.event.head_commit.author.name }}"
+            AUTHOR_EMAIL="${{ github.event.head_commit.author.email }}"
 
       - name: Send Feishu notification
         # runs-on: env
@@ -113,10 +113,12 @@ jobs:
                     {"tag":"text","text":"Job 当前状态：${{ env.JOB_STATUS }}"}
                   ],
                   [
-                    {"tag":"text","text":"仓库名(BRANCH→提交哈希): ${{ env.REPO_URL }} (→${{ env.GITHUB_SHA }})"}
+                    {"tag":"text","text":"仓库名: ${env.REPO_URL}"},
+                    {"tag":"text","text":"目标分支: ${env.BRANCH_TARGET}"},
+                    {"tag":"text","text":"提交哈希: ${env.GITHUB_SHA}"}
                   ], 
                   [
-                    {"tag":"text","text":"提交者: ${{ env.AUTHOR_NAME }} (Email: ${{ env.AUTHOR_EMAIL }})"}
+                    {"tag":"text","text":"贡献者: ${{ env.AUTHOR_NAME }} (Email: ${{ env.AUTHOR_EMAIL }})"}
                   ]
                 ]
               }
