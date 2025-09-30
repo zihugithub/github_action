@@ -94,28 +94,16 @@ jobs:
           message: '{
             "post":{
               "zh_cn":{
-                "title":"flagscale 构建结果通知",
+                "title":"flagscale → ${{ github.workflow }}工作流构建结果通知",
                 "content":[
                   [
                     {"tag":"text","text":"Job 当前状态：${{ job.status }}"}
                   ],
                   [
-                    {"tag":"text","text":"Job 开始时间戳: ${{ job.started_at }}"}
+                    {"tag":"text","text":"仓库名+提交哈希：${{ github.repository }} (${{ github.sha }})"}
                   ],
                   [
-                    {"tag":"text","text":"最终结论（成功/失败）: ${{ job.conclusion }}"}
-                  ],
-                  [
-                    {"tag":"text","text":"${{ github.workflow }} → Workflow 名称"}
-                  ],
-                  [
-                    {"tag":"text","text":"${{ runner.os }} → 执行环境的操作系统类型"}
-                  ],
-                  [
-                    {"tag":"text","text":"${{ github.repo }}#${{ github.sha }} → 仓库名+提交哈希"}
-                  ],
-                  [
-                    {"tag":"text","text":"触发事件的登录名: ${{ github.event.head_commit.author.name }} (Email: ${{ github.event.head_commit.author.email }})"}
+                    {"tag":"text","text":"提交者: ${{ github.event.head_commit.author.name }} (Email: ${{ github.event.head_commit.author.email }})"}
                   ]
                 ]
               }
