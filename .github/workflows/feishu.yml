@@ -108,7 +108,7 @@ jobs:
           message: '{
             "post":{
               "zh_cn":{
-                "title":"flagscale → ${env.GITHUB_WORKFLOW}工作流构建结果通知",
+                "title":"flagscale → ${{ env.GITHUB_WORKFLOW }}工作流构建结果通知",
                 "content":[
                   [
                     {"tag":"text","text":"Job 当前状态：${env.JOB_STATUS}"}
