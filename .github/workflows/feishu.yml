@@ -50,8 +50,6 @@ jobs:
       ports:
         - 80
       detach: true
-      stdin_open: false
-      tty: false
     outputs:
       container_id: ${{ steps.capture_id.outputs.container_id }}
 
