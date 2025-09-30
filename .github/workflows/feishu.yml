@@ -97,42 +97,32 @@ jobs:
                 "title":"flagscale 构建结果通知",
                 "content":[
                   [
-                    {"tag":"text","text":"本次构建状态: ${RESULT==0?}"},
-                    {"tag":"at","user_id":"all","user_name":"所有人"}
+                    {"tag":"text","text":"Job 当前状态：${{ job.status }}"}
                   ],
                   [
-                    {"tag": "text", "text": "查看完整日志 →"},
-                    {"tag": "link", "href": "https://github.com/marketplace/actions/feishu-action", "text": "点击这里"}
-                  ]
+                    {"tag":"text","text":"Job 开始时间戳: ${{ job.started_at }}"}
+                  ],
+                  [
+                    {"tag":"text","text":"最终结论（成功/失败）: ${{ job.conclusion }}"}
+                  ],
+                  [
+                    {"tag":"text","text":"${{ github.workflow }} → Workflow 名称"}
+                  ],
+                  [
+                    {"tag":"text","text":"${{ runner.os }} → 执行环境的操作系统类型"}
+                  ],
+                  [
+                    {"tag":"text","text":"${{ github.repo }}#${{ github.sha }} → 仓库名+提交哈希"}
+                  ],
+                  [
+                    {"tag":"text","text":"触发事件的登录名: ${{ github.event.head_commit.author.name }} (Email: ${{ github.event.head_commit.author.email }})""}
+                  ],
                 ]
               }
             }
           }'
 
 
-
-# 基础文本标签
-# [{"tag": "text", "text": "本次构建状态: ${RESULT==0?'&#9989;成功':'&#10060;失败'}"}]
-# ${RESULT} 是动态变量，根据前序步骤的成功与否显示不同图标（✔️/❌）
-
-# @提及用户标签 (at)
-# [
-#   {"tag": "text", "text": "提交者: ${GITHUB_ACTOR}}"},
-#   {"tag": "at", "user_id": "ou_xxxxxx", "user_name": "张三"}
-# ],
-# [
-#   {"tag": "text", "text": "当前提交的 Commit ID: ${GITHUB_SHA}}"},
-#   {"tag": "at", "user_id": "all", "user_name": "所有人"}
-# ]
-# user_id 需填写飞书中的组织架构 ID（以 ou_ 开头），例如 ou_123456
-# user_name 可读性更好，但实际生效依赖 ID
-# all 表示全体成员都会被 @
-
-# 超链接标签 (link)
-# [
-#   {"tag": "text", "text": "查看完整日志 →"},
-#   {"tag": "link", "href": "https://github.com/zihugithub/github_action/actions/runs/${GITHUB_RUN_ID}", "text": "点击这里"}
-# ]
 
 # 提交者: ${GITHUB_ACTOR}}
 # 开始时间：run: echo "::set-output name=start_time::$(date +%Y-%m-%dT%H:%M:%SZ)"
@@ -160,3 +150,26 @@ jobs:
 # GITHUB_REF：触发工作流的分支或标签引用（如 refs/heads/main）。
 # GITHUB_HEAD_REF/GITHUB_BASE_REF：仅对分叉仓库有效，分别表示头仓库和基础仓库的分支。
 # GITHUB_SERVER_URL/GITHUB_API_URL/GITHUB_GRAPHQL_URL：GitHub 服务的访问地址
+
+# 基础文本标签
+# [{"tag": "text", "text": "本次构建状态: ${RESULT==0?'&#9989;成功':'&#10060;失败'}"}]
+# ${RESULT} 是动态变量，根据前序步骤的成功与否显示不同图标（✔️/❌）
+
+# @提及用户标签 (at)
+# [
+#   {"tag": "text", "text": "提交者: ${GITHUB_ACTOR}}"},
+#   {"tag": "at", "user_id": "ou_xxxxxx", "user_name": "张三"}
+# ],
+# [
+#   {"tag": "text", "text": "当前提交的 Commit ID: ${GITHUB_SHA}}"},
+#   {"tag": "at", "user_id": "all", "user_name": "所有人"}
+# ]
+# user_id 需填写飞书中的组织架构 ID（以 ou_ 开头），例如 ou_123456
+# user_name 可读性更好，但实际生效依赖 ID
+# all 表示全体成员都会被 @
+
+# 超链接标签 (link) --- 不支持
+# [
+#   {"tag": "text", "text": "查看完整日志 →"},
+#   {"tag": "link", "href": "https://github.com/zihugithub/github_action/actions/runs/${GITHUB_RUN_ID}", "text": "点击这里"}
+# ]
