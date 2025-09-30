@@ -86,17 +86,23 @@ jobs:
   SEND_FEISHU:
     runs-on:  [self-hosted, Linux, X64, yfb_metax2]
     steps:
-      - name: Checkout code & prepare env vars
-        # uses: actions/checkout@v4
+      - name: Set repository context variables
+        if: always()                       # 确保总是执行
         run: |
-          env \
-            GITHUB_WORKFLOW="${{ github.workflow }}"
-            JOB_STATUS="${{ job.status }}"
-            REPO_URL="https://github.com/${{ github.repository }}.git"
-            BRANCH_TARGET=${{ github.event.pull_request.head.ref }}
-            GITHUB_SHA="${{ github.sha }}"
-            AUTHOR_NAME="${{ github.event.head_commit.author.name }}"
-            AUTHOR_EMAIL="${{ github.event.head_commit.author.email }}"
+          declare -A env_mapping=(
+            ["GITHUB_WORKFLOW"]="${github.workflow}"
+            ["JOB_STATUS"]="${job.status}"
+            ["REPO_URL"]="https://github.com/${{ github.repository }}.git"
+            ["BRANCH_TARGET"]="${github.event.pull_request.head.ref}"
+            ["GITHUB_SHA"]="${github.sha}"
+            ["AUTHOR_NAME"]="${github.event.head_commit.author.name}"
+            ["AUTHOR_EMAIL"]="${github.event.head_commit.author.email}"
+          )
+        
+          for key in "${!env_mapping[@]}"; do
+            value=${env_mapping[$key]}
+            echo "$key=$value" >> ${GITHUB_ENV}
+          done
 
       - name: Send Feishu notification
         # runs-on: env
@@ -107,10 +113,10 @@ jobs:
           message: '{
             "post":{
               "zh_cn":{
-                "title":"flagscale → ${{ env.GITHUB_WORKFLOW }}工作流构建结果通知",
+                "title":"flagscale → ${env.GITHUB_WORKFLOW}工作流构建结果通知",
                 "content":[
                   [
-                    {"tag":"text","text":"Job 当前状态：${{ env.JOB_STATUS }}"}
+                    {"tag":"text","text":"Job 当前状态：${env.JOB_STATUS}"}
                   ],
                   [
                     {"tag":"text","text":"仓库名: ${env.REPO_URL}"},
@@ -118,7 +124,7 @@ jobs:
                     {"tag":"text","text":"提交哈希: ${env.GITHUB_SHA}"}
                   ], 
                   [
-                    {"tag":"text","text":"贡献者: ${{ env.AUTHOR_NAME }} (Email: ${{ env.AUTHOR_EMAIL }})"}
+                    {"tag":"text","text":"贡献者: ${env.AUTHOR_NAME} (Email: ${env.AUTHOR_EMAIL})"}
                   ]
                 ]
               }
