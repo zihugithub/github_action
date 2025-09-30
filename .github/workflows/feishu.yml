@@ -86,25 +86,36 @@ jobs:
   SEND_FEISHU:
     runs-on:  [self-hosted, Linux, X64, yfb_metax2]
     steps:
-      - name: Send Feishu notification
-        uses: NewGr8Player/feishu-message-action@v1
+      - name: env
         uses: actions/checkout@v4
+        with:
+          workflow: ${{ github.workflow }}
+          status: ${{ job.status }}
+          repo_url: https://github.com/${{ github.repository }}.git
+          branch: ${{ github.event.pull_request.head.ref }}
+          commit: ${{ github.sha }}
+          author: ${{ github.event.head_commit.author.name }}
+          email: ${{ github.event.head_commit.author.email }}
+
+      - name: Send Feishu notification
+        runs-on: env
+        uses: NewGr8Player/feishu-message-action@v1
         with:
           webhook: ${{ secrets.FEISHU_WEBHOOK }}
           type: post
           message: '{
             "post":{
               "zh_cn":{
-                "title":"flagscale → ${{ github.workflow }}工作流构建结果通知",
+                "title":"flagscale → ${{ env.steps.with.workflow }}工作流构建结果通知",
                 "content":[
                   [
-                    {"tag":"text","text":"Job 当前状态：${{ job.status }}"}
+                    {"tag":"text","text":"Job 当前状态：${{ env.steps.with.status }}"}
                   ],
                   [
-                    {"tag":"text","text":"仓库名(BRANCH→提交哈希): ${{ github.repository }} (${{ github.event.pull_request.head.ref }}→${{ github.sha }})"}
+                    {"tag":"text","text":"仓库名(BRANCH→提交哈希): ${{ env.steps.with.repo_url }} (${{ env.steps.with.branch }}→${{ env.steps.with.commit }})"}
                   ], 
                   [
-                    {"tag":"text","text":"提交者: ${{ github.event.head_commit.author.name }} (Email: ${{ github.event.head_commit.author.email }})"}
+                    {"tag":"text","text":"提交者: ${{ env.steps.with.author }} (Email: ${{ env.steps.with.email }})"}
                   ]
                 ]
               }
