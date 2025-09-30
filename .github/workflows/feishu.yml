@@ -112,7 +112,7 @@ jobs:
                 "title":"flagscale → ${{ env.GITHUB_WORKFLOW }}工作流构建结果通知",
                 "content":[
                   [
-                    {"tag":"text","text":"Job 当前状态：${{ env.JOB_STATUS }}"}
+                    {"tag":"text","text":"**Job 当前状态:** ${{ env.JOB_STATUS }}"}
                   ],
                   [
                     {"tag":"text","text":"仓库名: ${{ env.REPO_URL }}"}
