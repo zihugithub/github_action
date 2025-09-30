@@ -31,7 +31,7 @@ jobs:
         run: |
           echo "test_type=inference" >> $GITHUB_OUTPUT
 
-  BUILD_IMAGE:
+  start-and-check-containers:
     needs: set-env
     runs-on:  [self-hosted, Linux, X64, yfb_metax2]
     container:
@@ -49,6 +49,11 @@ jobs:
         --device=/dev/mxcd
       ports:
         - 80
+      detach: true
+      stdin_open: false
+      tty: false
+    outputs:
+      container_id: ${{ steps.capture_id.outputs.container_id }}
 
     steps:
       - name: Checkout Code
@@ -69,27 +74,29 @@ jobs:
           set-safe-directory: true
 
       - name: Setup Environment Info
+        id: capture_id
         run: |
           echo "USER: $USER"
           echo "UID: $(id -u)"
           echo "GID: $(id -g)"
           echo "Home: $HOME"
           echo "PWD: ${PWD}"
-      
+  
+  save-and-cleanup:
+    needs: start-and-check-containers
+    runs-on:  [self-hosted, Linux, X64, yfb_metax2]
+    steps:
       - name: Save running container as image
         run: |
-          exit
-          CONTAINER_ID=$(/usr/bin/docker ps --filter "ancestor=${{ needs.set-env.outputs.ci_image }}" --format="{{.ID}}")
-          NEW_IMAGE_NAME="localhost:5000/saved_containers/flagscale:$(date +%Y%m%d_%H%M%S)_${GITHUB_SHA::7}"
-          # /usr/bin/docker commit $CONTAINER_ID $NEW_IMAGE_NAME
-          echo "CONTAINER_ID: ${CONTAINER_ID}\nNEW_IMAGE_NAME: ${NEW_IMAGE_NAME}"
+          CONTAINER_ID="${{ needs.start-and-check-containers.outputs.container_id }}"
+          echo ${CONTAINER_ID}
 
   SEND_FEISHU:
     needs: BUILD_IMAGE
     runs-on:  [self-hosted, Linux, X64, yfb_metax2]
     steps:
       - name: Set repository context variables
-        if: always()                       # 确保总是执行
+        if: always()
         run: |
           echo "GITHUB_WORKFLOW=${{ github.workflow }}" >> ${GITHUB_ENV}
           echo "JOB_STATUS=${{ job.status }}" >> ${GITHUB_ENV}
@@ -102,7 +109,6 @@ jobs:
           cat ${GITHUB_ENV}
 
       - name: Send Feishu notification
-        # runs-on: env
         uses: NewGr8Player/feishu-message-action@v1
         with:
           webhook: ${{ secrets.FEISHU_WEBHOOK }}
