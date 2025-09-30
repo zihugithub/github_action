@@ -34,41 +34,42 @@ jobs:
   start-and-check-containers:
     needs: set-env
     runs-on:  [self-hosted, Linux, X64, yfb_metax2]
-    containerSidecar:
-      image: ${{ needs.set-env.outputs.ci_image }}
-      options: >-
-        --ipc=host
-        --privileged=true
-        --group-add video
-        --shm-size 100gb
-        --hostname flagscale_cicd
-        --user root
-        --ulimit nofile=65535:65535
-        --ulimit memlock=-1
-        --device=/dev/dri
-        --device=/dev/mxcd
-      ports:
-        - 80
-    outputs:
-      container_id: ${{ steps.capture_id.outputs.container_id }}
+    services:
+      ci-env:
+        image: ${{ needs.set-env.outputs.ci_image }}
+        options: >-
+          --ipc=host
+          --privileged=true
+          --group-add video
+          --shm-size 100gb
+          --hostname flagscale_cicd
+          --user root
+          --ulimit nofile=65535:65535
+          --ulimit memlock=-1
+          --device=/dev/dri
+          --device=/dev/mxcd
+        ports:
+          - 80
+    # outputs:
+    #   container_id: ${{ steps.capture_id.outputs.container_id }}
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-        with:
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-          ref: ${{ github.event.pull_request.head.ref }}
-          fetch-depth: 0
-          ssh-strict: true
-          ssh-user: git
-          persist-credentials: true
-          clean: true
-          sparse-checkout-cone-mode: true
-          fetch-tags: false
-          show-progress: true
-          lfs: false
-          submodules: false
-          set-safe-directory: true
+      # - name: Checkout Code
+      #   uses: actions/checkout@v4
+      #   with:
+      #     repository: ${{ github.event.pull_request.head.repo.full_name }}
+      #     ref: ${{ github.event.pull_request.head.ref }}
+      #     fetch-depth: 0
+      #     ssh-strict: true
+      #     ssh-user: git
+      #     persist-credentials: true
+      #     clean: true
+      #     sparse-checkout-cone-mode: true
+      #     fetch-tags: false
+      #     show-progress: true
+      #     lfs: false
+      #     submodules: false
+      #     set-safe-directory: true
 
       - name: Setup Environment Info
         id: capture_id
@@ -78,60 +79,63 @@ jobs:
           echo "GID: $(id -g)"
           echo "Home: $HOME"
           echo "PWD: ${PWD}"
-
-  save-and-cleanup:
-    needs: start-and-check-containers
-    runs-on:  [self-hosted, Linux, X64, yfb_metax2]
-    steps:
-      - name: Save running container as image
-        run: |
-          # CONTAINER_ID="${{ needs.start-and-check-containers.outputs.container_id }}"
           CONTAINER_ID="$(docker ps --filter "ancestor=${{ needs.set-env.outputs.ci_image }}" --format="{{.ID}}")"
           echo ${CONTAINER_ID}
 
-  feishu-notice:
-    needs: save-and-cleanup
-    runs-on:  [self-hosted, Linux, X64, yfb_metax2]
-    steps:
-      - name: Set repository context variables
-        if: always()
-        run: |
-          echo "GITHUB_WORKFLOW=${{ github.workflow }}" >> ${GITHUB_ENV}
-          echo "JOB_STATUS=${{ job.status }}" >> ${GITHUB_ENV}
-          echo "REPO_URL=https://github.com/${{ github.repository }}.git" >> ${GITHUB_ENV}
-          # echo "BRANCH_TARGET=${{ github.event.pull_request.head.ref }}" >> ${GITHUB_ENV}
-          echo "GITHUB_SHA=${{ github.sha }}" >> ${GITHUB_ENV}
-          echo "AUTHOR_NAME=${{ github.event.head_commit.author.name }}" >> ${GITHUB_ENV}
-          echo "AUTHOR_EMAIL=${{ github.event.head_commit.author.email }}" >> ${GITHUB_ENV}
+#   save-and-cleanup:
+#     needs: start-and-check-containers
+#     runs-on:  [self-hosted, Linux, X64, yfb_metax2]
+#     steps:
+#       - name: Save running container as image
+#         run: |
+#           # CONTAINER_ID="${{ needs.start-and-check-containers.outputs.container_id }}"
+#           CONTAINER_ID="$(docker ps --filter "ancestor=${{ needs.set-env.outputs.ci_image }}" --format="{{.ID}}")"
+#           echo ${CONTAINER_ID}
 
-          cat ${GITHUB_ENV}
+# # ******************************************************************************************8
+#   feishu-notice:
+#     needs: save-and-cleanup
+#     runs-on:  [self-hosted, Linux, X64, yfb_metax2]
+#     steps:
+#       - name: Set repository context variables
+#         if: always()
+#         run: |
+#           echo "GITHUB_WORKFLOW=${{ github.workflow }}" >> ${GITHUB_ENV}
+#           echo "JOB_STATUS=${{ job.status }}" >> ${GITHUB_ENV}
+#           echo "REPO_URL=https://github.com/${{ github.repository }}.git" >> ${GITHUB_ENV}
+#           # echo "BRANCH_TARGET=${{ github.event.pull_request.head.ref }}" >> ${GITHUB_ENV}
+#           echo "GITHUB_SHA=${{ github.sha }}" >> ${GITHUB_ENV}
+#           echo "AUTHOR_NAME=${{ github.event.head_commit.author.name }}" >> ${GITHUB_ENV}
+#           echo "AUTHOR_EMAIL=${{ github.event.head_commit.author.email }}" >> ${GITHUB_ENV}
 
-      - name: Send Feishu notification
-        uses: NewGr8Player/feishu-message-action@v1
-        with:
-          webhook: ${{ secrets.FEISHU_WEBHOOK }}
-          type: post
-          message: '{
-            "post":{
-              "zh_cn":{
-                "title":"flagscale → ${{ env.GITHUB_WORKFLOW }}工作流构建结果通知",
-                "content":[
-                  [
-                    {"tag":"text","text":"Job 当前状态: ${{ env.JOB_STATUS }}"}
-                  ],
-                  [
-                    {"tag":"text","text":"仓库名: ${{ env.REPO_URL }}"}
-                  ], 
-                  [
-                    {"tag":"text","text":"目标分支: ${{ env.BRANCH_TARGET }}"}
-                  ],
-                  [
-                    {"tag":"text","text":"提交哈希: ${{ env.GITHUB_SHA }}"}
-                  ],
-                  [
-                    {"tag":"text","text":"贡献者: ${{ env.AUTHOR_NAME }} (Email: ${{ env.AUTHOR_EMAIL }})"}
-                  ]
-                ]
-              }
-            }
-          }'
+#           cat ${GITHUB_ENV}
+
+#       - name: Send Feishu notification
+#         uses: NewGr8Player/feishu-message-action@v1
+#         with:
+#           webhook: ${{ secrets.FEISHU_WEBHOOK }}
+#           type: post
+#           message: '{
+#             "post":{
+#               "zh_cn":{
+#                 "title":"flagscale → ${{ env.GITHUB_WORKFLOW }}工作流构建结果通知",
+#                 "content":[
+#                   [
+#                     {"tag":"text","text":"Job 当前状态: ${{ env.JOB_STATUS }}"}
+#                   ],
+#                   [
+#                     {"tag":"text","text":"仓库名: ${{ env.REPO_URL }}"}
+#                   ], 
+#                   [
+#                     {"tag":"text","text":"目标分支: ${{ env.BRANCH_TARGET }}"}
+#                   ],
+#                   [
+#                     {"tag":"text","text":"提交哈希: ${{ env.GITHUB_SHA }}"}
+#                   ],
+#                   [
+#                     {"tag":"text","text":"贡献者: ${{ env.AUTHOR_NAME }} (Email: ${{ env.AUTHOR_EMAIL }})"}
+#                   ]
+#                 ]
+#               }
+#             }
+#           }'
