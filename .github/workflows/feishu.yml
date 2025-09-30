@@ -87,7 +87,7 @@ jobs:
     runs-on:  [self-hosted, Linux, X64, yfb_metax2]
     steps:
       - name: Checkout code & prepare env vars
-        uses: actions/checkout@v4
+        # uses: actions/checkout@v4
         run: |
           env \
             GITHUB_WORKFLOW="${{ github.workflow }}"
