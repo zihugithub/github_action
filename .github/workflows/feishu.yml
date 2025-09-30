@@ -86,17 +86,17 @@ jobs:
   SEND_FEISHU:
     runs-on:  [self-hosted, Linux, X64, yfb_metax2]
     steps:
-      - name: env
-        uses: actions/checkout@v4
-        with:
-          workflow: ${{ github.workflow }}
-          status: ${{ job.status }}
-          repo_url: https://github.com/${{ github.repository }}.git
-          # ref: ${{ github.event.pull_request.head.ref }}
-          commit: ${{ github.sha }}
-          author: ${{ github.event.head_commit.author.name }}
-          email: ${{ github.event.head_commit.author.email }}
-          persist-credentials: false
+      # - name: Checkout code & prepare env vars
+      #   uses: actions/checkout@v4
+      #   with:
+      #     workflow: ${{ github.workflow }}
+      #     status: ${{ job.status }}
+      #     repo_url: https://github.com/${{ github.repository }}.git
+      #     branch: ${{ github.event.pull_request.head.ref }}
+      #     commit: ${{ github.sha }}
+      #     author: ${{ github.event.head_commit.author.name }}
+      #     email: ${{ github.event.head_commit.author.email }}
+      #     persist-credentials: false
 
       - name: Send Feishu notification
         # runs-on: env
@@ -107,16 +107,16 @@ jobs:
           message: '{
             "post":{
               "zh_cn":{
-                "title":"flagscale → ${{ env.steps.with.workflow }}工作流构建结果通知",
+                "title":"flagscale → ${{ env.GITHUB_WORKFLOW }}工作流构建结果通知",
                 "content":[
                   [
-                    {"tag":"text","text":"Job 当前状态：${{ env.steps.with.status }}"}
+                    {"tag":"text","text":"Job 当前状态：${{ env.JOB_STATUS }}"}
                   ],
                   [
-                    {"tag":"text","text":"仓库名(BRANCH→提交哈希): ${{ env.steps.with.repo_url }} (→${{ env.steps.with.commit }})"}
+                    {"tag":"text","text":"仓库名(BRANCH→提交哈希): ${{ env.REPO_URL }} (→${{ env.GITHUB_SHA }})"}
                   ], 
                   [
-                    {"tag":"text","text":"提交者: ${{ env.steps.with.author }} (Email: ${{ env.steps.with.email }})"}
+                    {"tag":"text","text":"提交者: ${{ env.AUTHOR_NAME }} (Email: ${{ env.AUTHOR_EMAIL }})"}
                   ]
                 ]
               }
