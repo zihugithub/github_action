@@ -49,7 +49,6 @@ jobs:
         --device=/dev/mxcd
       ports:
         - 80
-      detach: true
     outputs:
       container_id: ${{ steps.capture_id.outputs.container_id }}
 
