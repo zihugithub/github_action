@@ -89,7 +89,7 @@ jobs:
           echo ${CONTAINER_ID}
 
   SEND_FEISHU:
-    needs: BUILD_IMAGE
+    needs: save-and-cleanup
     runs-on:  [self-hosted, Linux, X64, yfb_metax2]
     steps:
       - name: Set repository context variables
