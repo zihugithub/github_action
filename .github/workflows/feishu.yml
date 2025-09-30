@@ -34,7 +34,7 @@ jobs:
   start-and-check-containers:
     needs: set-env
     runs-on:  [self-hosted, Linux, X64, yfb_metax2]
-    container:
+    containerSidecar:
       image: ${{ needs.set-env.outputs.ci_image }}
       options: >-
         --ipc=host
@@ -78,17 +78,18 @@ jobs:
           echo "GID: $(id -g)"
           echo "Home: $HOME"
           echo "PWD: ${PWD}"
-  
+
   save-and-cleanup:
     needs: start-and-check-containers
     runs-on:  [self-hosted, Linux, X64, yfb_metax2]
     steps:
       - name: Save running container as image
         run: |
-          CONTAINER_ID="${{ needs.start-and-check-containers.outputs.container_id }}"
+          # CONTAINER_ID="${{ needs.start-and-check-containers.outputs.container_id }}"
+          CONTAINER_ID="$(docker ps --filter "ancestor=${{ needs.set-env.outputs.ci_image }}" --format="{{.ID}}")"
           echo ${CONTAINER_ID}
 
-  SEND_FEISHU:
+  feishu-notice:
     needs: save-and-cleanup
     runs-on:  [self-hosted, Linux, X64, yfb_metax2]
     steps:
