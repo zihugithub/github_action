@@ -89,20 +89,15 @@ jobs:
       - name: Set repository context variables
         if: always()                       # 确保总是执行
         run: |
-          declare -A env_mapping=(
-            ["GITHUB_WORKFLOW"]="${github.workflow}"
-            ["JOB_STATUS"]="${job.status}"
-            ["REPO_URL"]="https://github.com/${{ github.repository }}.git"
-            ["BRANCH_TARGET"]="${github.event.pull_request.head.ref}"
-            ["GITHUB_SHA"]="${github.sha}"
-            ["AUTHOR_NAME"]="${github.event.head_commit.author.name}"
-            ["AUTHOR_EMAIL"]="${github.event.head_commit.author.email}"
-          )
-        
-          for key in "${!env_mapping[@]}"; do
-            value=${env_mapping[$key]}
-            echo "$key=$value" >> ${GITHUB_ENV}
-          done
+          echo "GITHUB_WORKFLOW=${{ github.workflow }}" >> ${GITHUB_ENV}
+          echo "JOB_STATUS=${{ job.status }}" >> ${GITHUB_ENV}
+          echo "REPO_URL=https://github.com/${{ github.repository }}.git" >> ${GITHUB_ENV}
+          echo "BRANCH_TARGET=${{ github.event.pull_request.head.ref }}" >> ${GITHUB_ENV}
+          echo "GITHUB_SHA=${{ github.sha }}" >> ${GITHUB_ENV}
+          echo "AUTHOR_NAME=${{ github.event.head_commit.author.name }}" >> ${GITHUB_ENV}
+          echo "AUTHOR_EMAIL=${{ github.event.head_commit.author.email }}" >> ${GITHUB_ENV}
+
+          cat ${GITHUB_ENV}
 
       - name: Send Feishu notification
         # runs-on: env
