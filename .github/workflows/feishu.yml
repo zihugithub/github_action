@@ -98,6 +98,11 @@ jobs:
                 "content":[
                   [
                     {"tag":"text","text":"本次构建状态: ${RESULT==0?}"},
+                    {"tag":"at","user_id":"all","user_name":"所有人"}
+                  ],
+                  [
+                    {"tag": "text", "text": "查看完整日志 →"},
+                    {"tag": "link", "href": "https://github.com/marketplace/actions/feishu-action", "text": "点击这里"}
                   ]
                 ]
               }
@@ -106,24 +111,52 @@ jobs:
 
 
 
+# 基础文本标签
+# [{"tag": "text", "text": "本次构建状态: ${RESULT==0?'&#9989;成功':'&#10060;失败'}"}]
+# ${RESULT} 是动态变量，根据前序步骤的成功与否显示不同图标（✔️/❌）
 
-                  # [
-                  #   {"tag":"text","text":"当前提交的 Commit ID: ${GITHUB_SHA}"},
-                  #   {"tag":"at","user_id":"all","user_name":"所有人"}
-                  # ],
-      
-                  # [
-                  #   { "tag": "action", "actions": [
-                  #     "text": "查看详情",
-                  #     "openLink": true,
-                  #     "url": "https://th.bing.com/th/id/R.987f582c510be58755c4933cda68d525?rik=C0D21hJDYvXosw&riu=http%3a%2f%2fimg.pconline.com.cn%2fimages%2fupload%2fupc%2ftx%2fwallpaper%2f1305%2f16%2fc4%2f20990657_1368686545122.jpg&ehk=netN2qzcCVS4ALUQfDOwxAwFcy41oxC%2b0xTFvOYy5ds%3d&risl=&pid=ImgRaw&r=0"
-                  #   },
-                  #   {
-                  #     "text": "回滚版本",
-                  #     "callback": {
-                  #       "type": "event",
-                  #       "eventType": "message.update",
-                  #       "params": { "op": "rollback" }
-                  #     }
-                  #   }
-                  # ]
+# @提及用户标签 (at)
+# [
+#   {"tag": "text", "text": "提交者: ${GITHUB_ACTOR}}"},
+#   {"tag": "at", "user_id": "ou_xxxxxx", "user_name": "张三"}
+# ],
+# [
+#   {"tag": "text", "text": "当前提交的 Commit ID: ${GITHUB_SHA}}"},
+#   {"tag": "at", "user_id": "all", "user_name": "所有人"}
+# ]
+# user_id 需填写飞书中的组织架构 ID（以 ou_ 开头），例如 ou_123456
+# user_name 可读性更好，但实际生效依赖 ID
+# all 表示全体成员都会被 @
+
+# 超链接标签 (link)
+# [
+#   {"tag": "text", "text": "查看完整日志 →"},
+#   {"tag": "link", "href": "https://github.com/zihugithub/github_action/actions/runs/${GITHUB_RUN_ID}", "text": "点击这里"}
+# ]
+
+# 提交者: ${GITHUB_ACTOR}}
+# 开始时间：run: echo "::set-output name=start_time::$(date +%Y-%m-%dT%H:%M:%SZ)"
+# 结束时间:
+# REPO: 
+# COMMIT: 
+# Job 当前状态：${{ job.status }}
+# Job 开始时间戳: ${{ job.started_at }}
+# 最终结论（成功/失败）: ${{ job.conclusion }}
+# ${{ github.workflow }} → Workflow 名称
+# ${{ runner.os }} → 执行环境的操作系统类型
+# ${{ github.repo }}#${{ github.sha }} → 仓库名+提交哈希
+
+# GITHUB_WORKFLOW：工作流的名称。
+# GITHUB_RUN_ID：存储库中每次运行的唯一编号（不变）。
+# GITHUB_RUN_NUMBER：特定工作流每次运行的唯一递增编号。
+# GITHUB_ACTION：当前操作的唯一标识符 (id)。
+# GITHUB_ACTIONS：始终为 true，用于区分本地测试与 GitHub Actions 运行。
+# GITHUB_ACTOR：启动工作流的用户或应用名称。
+# GITHUB_REPOSITORY：所有者和存储库名称（格式如 owner/repo）。
+# GITHUB_EVENT_NAME：触发工作流的 Webhook 事件名称（如 push, pull_request）。
+# GITHUB_EVENT_PATH：完整 Webhook 事件负载的文件路径。
+# GITHUB_WORKSPACE：GitHub 工作区目录路径（可用于定位文件）。
+# GITHUB_SHA：触发工作流的提交哈希值。
+# GITHUB_REF：触发工作流的分支或标签引用（如 refs/heads/main）。
+# GITHUB_HEAD_REF/GITHUB_BASE_REF：仅对分叉仓库有效，分别表示头仓库和基础仓库的分支。
+# GITHUB_SERVER_URL/GITHUB_API_URL/GITHUB_GRAPHQL_URL：GitHub 服务的访问地址
