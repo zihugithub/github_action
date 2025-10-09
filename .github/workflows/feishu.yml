@@ -80,7 +80,7 @@ jobs:
           echo "Home: $HOME"
           echo "PWD: ${PWD}"
           CONTAINER_ID="$(docker ps --filter "ancestor=${{ needs.set-env.outputs.ci_image }}" --format="{{.ID}}")"
-          echo ${CONTAINER_ID}
+          echo "CONTAINER_ID: ${CONTAINER_ID}"
 
 #   save-and-cleanup:
 #     needs: start-and-check-containers
