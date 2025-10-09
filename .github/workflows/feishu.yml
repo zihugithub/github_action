@@ -11,28 +11,28 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  set-env:
-    runs-on: ubuntu-latest
-    outputs:
-      ci_image: ${{ steps.set-image.outputs.ci_image }} # Declare output variable
-      test_tasks: ${{ steps.set-tasks.outputs.test_tasks }}
-      test_type: ${{ steps.set-type.outputs.test_type }}
-    steps:
-      - name: Set CI base Image
-        id: set-image
-        run: |
-          echo "ci_image=localhost:5000/flagscale:maca.ai2.33.0.13-torch2.6-py310-ubuntu22.04-amd64-time2508051515" >> $GITHUB_OUTPUT  # Set output variable
-      - name: Set Test Tasks
-        id: set-tasks
-        run: |
-          echo "test_tasks=deepseek_r1_distill_qwen-metax,opi_llama3_1_instruct-metax,opi_llama3_1_instruct-flaggems-metax,qwen3-metax,qwen3-flaggems-metax" >> $GITHUB_OUTPUT
-      - name: Set Test Type
-        id: set-type
-        run: |
-          echo "test_type=inference" >> $GITHUB_OUTPUT
+  # set-env:
+  #   runs-on: ubuntu-latest
+  #   outputs:
+  #     ci_image: ${{ steps.set-image.outputs.ci_image }} # Declare output variable
+  #     test_tasks: ${{ steps.set-tasks.outputs.test_tasks }}
+  #     test_type: ${{ steps.set-type.outputs.test_type }}
+  #   steps:
+  #     - name: Set CI base Image
+  #       id: set-image
+  #       run: |
+  #         echo "ci_image=localhost:5000/flagscale:maca.ai2.33.0.13-torch2.6-py310-ubuntu22.04-amd64-time2508051515" >> $GITHUB_OUTPUT  # Set output variable
+  #     - name: Set Test Tasks
+  #       id: set-tasks
+  #       run: |
+  #         echo "test_tasks=deepseek_r1_distill_qwen-metax,opi_llama3_1_instruct-metax,opi_llama3_1_instruct-flaggems-metax,qwen3-metax,qwen3-flaggems-metax" >> $GITHUB_OUTPUT
+  #     - name: Set Test Type
+  #       id: set-type
+  #       run: |
+  #         echo "test_type=inference" >> $GITHUB_OUTPUT
 
   start-and-check-containers:
-    needs: set-env
+    # needs: set-env
     runs-on:  [self-hosted, Linux, X64, yfb_metax2]
     # services:
     #   ci-env:
@@ -52,7 +52,8 @@ jobs:
     #       - 80
 
     container:
-      image: ${{ inputs.image }}
+      # image: ${{ inputs.image }}
+      image: localhost:5000/flagscale:maca.ai2.33.0.13-torch2.6-py310-ubuntu22.04-amd64-time2508051515
       ports:
         - 80
       options: --ipc=host --privileged=true --group-add video --shm-size 100gb --hostname flagscale_cicd --user root --ulimit nofile=65535:65535 --ulimit memlock=-1 --device=/dev/dri --device=/dev/mxcd
