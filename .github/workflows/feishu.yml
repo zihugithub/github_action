@@ -52,34 +52,42 @@ jobs:
           - 80
 
     steps:
-      # - name: Checkout Code
-      #   uses: actions/checkout@v4
-      #   with:
-      #     repository: ${{ github.event.pull_request.head.repo.full_name }}
-      #     ref: ${{ github.event.pull_request.head.ref }}
-      #     fetch-depth: 0
-      #     ssh-strict: true
-      #     ssh-user: git
-      #     persist-credentials: true
-      #     clean: true
-      #     sparse-checkout-cone-mode: true
-      #     fetch-tags: false
-      #     show-progress: true
-      #     lfs: false
-      #     submodules: false
-      #     set-safe-directory: true
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+          ssh-strict: true
+          ssh-user: git
+          persist-credentials: true
+          clean: true
+          sparse-checkout-cone-mode: true
+          fetch-tags: false
+          show-progress: true
+          lfs: false
+          submodules: false
+          set-safe-directory: true
 
       - name: Setup Environment Info
         run: |
           echo "Using_image: ${{ needs.set-env.outputs.ci_image }}"
-          CONTAINER_ID="$(/usr/bin/docker ps -a --format "{{.ID}} {{.Names}}" | grep "localhost5000" | cut -d ' ' -f 1)"
+          CONTAINER_ID="$(/usr/bin/docker ps --format "{{.ID}} {{.Names}}" | grep "localhost5000" | cut -d ' ' -f 1)"
+          if [ -z "$CONTAINER_ID" ]; then
+            echo "Error: No running container found for service 'ci-env'"
+            exit 1
+          fi
           echo "Running_CONTAINER: ${CONTAINER_ID}"
           echo "container_id=${CONTAINER_ID}" >> $GITHUB_OUTPUT
 
       - name: Test
         run: |
+          if ! docker inspect --format='{{.State.Healthy}}' "${{ env.container_id }}" | grep -q "true"; then
+            echo "Aborting job due to unhealthy container state"
+            exit 1
+          fi
           echo "CONTAINER_ID: ${{ env.container_id}}"
-        
+
 
   # save-and-cleanup:
   #   needs: start-and-check-containers
@@ -138,27 +146,3 @@ jobs:
 #               }
 #             }
 #           }'
-
-# CONTAINER ID   NAMES                                                                                                                 LABELS
-# 46f702e742ff   cf13c864d07d4f1d91e87b2f98438d0c_localhost5000flagscalemacaai233013torch26py310ubuntu2204amd64time2508051515_6543ad   d2eadf=,org.opencontainers.image.ref.name=ubuntu,org.opencontainers.image.version=22.04,com.metax.driver.version=2.33.0.9,com.metax.sdk.version=2.33.0.12,com.metax.torch.version=2.6+2.33.0.5
-# 742b694ac110   test_0924ye                                                                                                           com.metax.driver.version=3.0.0.5,com.metax.sdk.version=3.0.0.8,com.metax.torch.version=2.6+3.0.0.3,org.opencontainers.image.ref.name=ubuntu,org.opencontainers.image.version=22.04
-# 8e14709ca32e   test0923ye                                                                                                            com.metax.driver.version=3.0.0.5,com.metax.sdk.version=3.0.0.8,com.metax.torch.version=2.6+3.0.0.3,org.opencontainers.image.ref.name=ubuntu,org.opencontainers.image.version=22.04
-# a38c154febff   metax-0911                                                                                                            com.metax.driver.version=3.0.0.5,com.metax.sdk.version=3.0.0.8,com.metax.torch.version=2.6+3.0.0.3,org.opencontainers.image.ref.name=ubuntu,org.opencontainers.image.version=22.04
-# cd34ee23639f   metax-vllm-0.9.1                                                                                                      com.metax.driver.version=3.0.0.5,com.metax.sdk.version=3.0.0.8,com.metax.torch.version=2.6+3.0.0.3,org.opencontainers.image.ref.name=ubuntu,org.opencontainers.image.version=22.04
-# 01dc6218414d   nifty_ritchie                                                                                                         com.metax.driver.version=3.0.0.5,com.metax.sdk.version=3.0.0.8,com.metax.torch.version=2.6+3.0.0.3,org.opencontainers.image.ref.name=ubuntu,org.opencontainers.image.version=22.04
-# e37a9117d8d5   wonderful_bose                                                                                                        org.opencontainers.image.ref.name=ubuntu,org.opencontainers.image.version=22.04,com.metax.driver.version=3.0.0.5,com.metax.sdk.version=3.0.0.8,com.metax.torch.version=2.6+3.0.0.3
-# 976338c9f163   gifted_ptolemy                                                                                                        com.metax.driver.version=3.0.0.5,com.metax.sdk.version=3.0.0.8,com.metax.torch.version=2.6+3.0.0.3,org.opencontainers.image.ref.name=ubuntu,org.opencontainers.image.version=22.04
-# 0bc593814805   wizardly_keller                                                                                                       com.metax.torch.version=2.6+3.0.0.3,org.opencontainers.image.ref.name=ubuntu,org.opencontainers.image.version=22.04,com.metax.driver.version=3.0.0.5,com.metax.sdk.version=3.0.0.8
-# dca51ddd54db   metax-sscache-vllm                                                                                                    com.metax.driver.version=2.33.0.9,com.metax.sdk.version=2.33.0.12,com.metax.torch.version=2.6+2.33.0.5,org.opencontainers.image.ref.name=ubuntu,org.opencontainers.image.version=22.04
-# f9ea75ad195f   elegant_franklin                                                                                                      com.metax.torch.version=2.6+3.0.0.3,org.opencontainers.image.ref.name=ubuntu,org.opencontainers.image.version=22.04,com.metax.driver.version=3.0.0.5,com.metax.sdk.version=3.0.0.8
-# d20ba47b5f01   ecstatic_shamir                                                                                                       com.metax.sdk.version=3.0.0.8,com.metax.torch.version=2.6+3.0.0.3,org.opencontainers.image.ref.name=ubuntu,org.opencontainers.image.version=22.04,com.metax.driver.version=3.0.0.5
-# ff45bea55a29   test250812ye                                                                                                          com.metax.driver.version=2.33.0.9,com.metax.sdk.version=2.33.0.12,com.metax.torch.version=2.6+2.33.0.5,org.opencontainers.image.ref.name=ubuntu,org.opencontainers.image.version=22.04
-# a4d209f5a5ec   charming_lehmann                                                                                                      com.metax.driver.version=2.33.0.9,com.metax.sdk.version=2.33.0.12,com.metax.torch.version=2.6+2.33.0.5,org.opencontainers.image.ref.name=ubuntu,org.opencontainers.image.version=22.04
-# d3954c2f3caf   practical_villani                                                                                                     com.metax.driver.version=2.33.0.9,com.metax.sdk.version=2.33.0.12,com.metax.torch.version=2.6+2.33.0.5,org.opencontainers.image.ref.name=ubuntu,org.opencontainers.image.version=22.04
-# 8dfef347b264   hardcore_visvesvaraya                                                                                                 com.metax.driver.version=2.33.0.9,com.metax.sdk.version=2.33.0.12,com.metax.torch.version=2.6+2.33.0.5,org.opencontainers.image.ref.name=ubuntu,org.opencontainers.image.version=22.04
-# 042d4ac0daa6   inspiring_bell                                                                                                        org.opencontainers.image.version=22.04,com.metax.driver.version=2.33.0.9,com.metax.sdk.version=2.33.0.12,com.metax.torch.version=2.6+2.33.0.5,org.opencontainers.image.ref.name=ubuntu
-# 0ff564ef9c9b   cranky_bartik                                                                                                         com.metax.torch.version=2.6+2.33.0.5,org.opencontainers.image.ref.name=ubuntu,org.opencontainers.image.version=22.04,com.metax.driver.version=2.33.0.9,com.metax.sdk.version=2.33.0.12
-# 1917f25593b0   dong_0801                                                                                                             com.metax.driver.version=2.33.0.9,com.metax.sdk.version=2.33.0.12,com.metax.torch.version=2.6+2.33.0.5,org.opencontainers.image.ref.name=ubuntu,org.opencontainers.image.version=22.04
-# 81046a6345ee   dong_073116                                                                                                           org.opencontainers.image.version=22.04,com.metax.driver.version=2.33.0.9,com.metax.sdk.version=2.33.0.12,com.metax.torch.version=2.6+2.33.0.5,org.opencontainers.image.ref.name=ubuntu
-# 0c93ed97bb22   dong_0731                                                                                                             com.metax.sdk.version=2.33.0.12,com.metax.torch.version=2.6+2.33.0.5,org.opencontainers.image.ref.name=ubuntu,org.opencontainers.image.version=22.04,com.metax.driver.version=2.33.0.9
-# ed3ea24c3812   registry    
