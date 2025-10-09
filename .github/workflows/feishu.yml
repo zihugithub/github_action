@@ -80,16 +80,16 @@ jobs:
           echo "Home: $HOME"
           echo "PWD: ${PWD}"
           echo "Using_image: ${{ needs.set-env.outputs.ci_image }}"
-          CONTAINER_ID="$(docker ps --filter "ancestor=${{ needs.set-env.outputs.ci_image }}" --format="{{.ID}}")"
-          echo "CONTAINER_ID: ${CONTAINER_ID}"
           /usr/bin/docker version --format '{{.Server.APIVersion}}'
           /usr/bin/docker version --format '{{.Client.APIVersion}}'
+          # CONTAINER_ID="$(docker ps --filter "ancestor=${{ needs.set-env.outputs.ci_image }}" --format="{{.ID}}")"
+          # echo "CONTAINER_ID: ${CONTAINER_ID}"
           # /usr/bin/docker ps --filter "ancestor=${{ needs.set-env.outputs.ci_image }}" --format="{{.ID}}" # 无法输出
           # docker ps -a --format "table {{.ID}}\t{{.Image}}" | grep "${{ needs.set-env.outputs.ci_image }}"
           # /usr/bin/docker ps --format="{{.ID}}"
           # /usr/bin/docker ps --filter "label=org.opencontainers.image.ref=${{ needs.set-env.outputs.ci_image }}" --format="{{.ID}}"  # 无法输出
-          docker ps --filter "label=com.github.workflow.service=ci-env" -q
-          
+          docker ps --all --format "table {{.ID}}\t{{.Names}}\t{{.Labels}}"
+
 
 #   save-and-cleanup:
 #     needs: start-and-check-containers
