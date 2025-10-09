@@ -35,7 +35,7 @@ jobs:
     # needs: set-env
     runs-on:  [self-hosted, Linux, X64, yfb_metax2]
 
-    # services:
+    services:
       ci-env:
         # image: ${{ needs.set-env.outputs.ci_image }}
         image: localhost:5000/flagscale:maca.ai2.33.0.13-torch2.6-py310-ubuntu22.04-amd64-time2508051515
