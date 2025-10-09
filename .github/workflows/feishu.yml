@@ -32,53 +32,50 @@ jobs:
           echo "test_type=inference" >> $GITHUB_OUTPUT
 
   start-and-check-containers:
-    needs: set-env
+    # needs: set-env
     runs-on:  [self-hosted, Linux, X64, yfb_metax2]
 
     # services:
-    #   ci-env:
-    #     image: ${{ needs.set-env.outputs.ci_image }}
-    #     options: >-
-    #       --ipc=host
-    #       --privileged=true
-    #       --group-add video
-    #       --shm-size 100gb
-    #       --hostname flagscale_cicd
-    #       --user root
-    #       --ulimit nofile=65535:65535
-    #       --ulimit memlock=-1
-    #       --device=/dev/dri
-    #       --device=/dev/mxcd
-    #     ports:
-    #       - 80
+      ci-env:
+        # image: ${{ needs.set-env.outputs.ci_image }}
+        image: localhost:5000/flagscale:maca.ai2.33.0.13-torch2.6-py310-ubuntu22.04-amd64-time2508051515
+        options: >-
+          --ipc=host
+          --privileged=true
+          --group-add video
+          --shm-size 100gb
+          --hostname flagscale_cicd
+          --user root
+          --ulimit nofile=65535:65535
+          --ulimit memlock=-1
+          --device=/dev/dri
+          --device=/dev/mxcd
+        ports:
+          - 80
 
-    container:
-      # image: ${{ inputs.image }}
-      image: localhost:5000/flagscale:maca.ai2.33.0.13-torch2.6-py310-ubuntu22.04-amd64-time2508051515
-      ports:
-        - 80
-      options: --ipc=host --privileged=true --group-add video --shm-size 100gb --hostname flagscale_cicd --user root --ulimit nofile=65535:65535 --ulimit memlock=-1 --device=/dev/dri --device=/dev/mxcd
+    # container:
+    #   # image: ${{ inputs.image }}
+    #   image: localhost:5000/flagscale:maca.ai2.33.0.13-torch2.6-py310-ubuntu22.04-amd64-time2508051515
+    #   ports:
+    #     - 80
+    #   options: --ipc=host --privileged=true --group-add video --shm-size 100gb --hostname flagscale_cicd --user root --ulimit nofile=65535:65535 --ulimit memlock=-1 --device=/dev/dri --device=/dev/mxcd
 
     steps:
-      # - name: Checkout Code
-      #   uses: actions/checkout@v4
-      #   with:
-      #     repository: ${{ github.event.pull_request.head.repo.full_name }}
-      #     ref: ${{ github.event.pull_request.head.ref }}
-      #     ssh-strict: true
-      #     ssh-user: git
-      #     persist-credentials: true
-      #     clean: true
-      #     sparse-checkout-cone-mode: true
-      #     fetch-tags: false
-      #     show-progress: true
-      #     lfs: false
-      #     submodules: false
-      #     set-safe-directory: true
-
-      - name: exit container
-        run: |
-          exit
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+          ssh-strict: true
+          ssh-user: git
+          persist-credentials: true
+          clean: true
+          sparse-checkout-cone-mode: true
+          fetch-tags: false
+          show-progress: true
+          lfs: false
+          submodules: false
+          set-safe-directory: true
 
       - name: Setup Environment Info
         run: |
