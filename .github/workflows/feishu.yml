@@ -73,6 +73,7 @@ jobs:
         run: |
           echo "Using_image: ${{ needs.set-env.outputs.ci_image }}"
           CONTAINER_ID="$(/usr/bin/docker ps -a --format "{{.ID}} {{.Names}}" | grep "localhost5000" | cut -d ' ' -f 1)"
+          echo "Running_CONTAINER: ${CONTAINER_ID}"
           echo "container_id=${CONTAINER_ID}" >> $GITHUB_OUTPUT
 
       - name: Test
