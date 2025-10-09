@@ -78,10 +78,11 @@ jobs:
             exit 1
           fi
           echo "Running_CONTAINER: ${CONTAINER_ID}"
-          echo "container_id=${CONTAINER_ID}" >> $GITHUB_OUTPUT
+          echo "container_id=$CONTAINER_ID" >> $GITHUB_OUTPUT
 
       - name: Test
         run: |
+          env
           if ! docker inspect --format='{{.State.Healthy}}' "${{ env.container_id }}" | grep -q "true"; then
             echo "Aborting job due to unhealthy container state"
             exit 1
