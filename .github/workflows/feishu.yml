@@ -33,6 +33,7 @@ jobs:
 
   start-and-check-containers:
     needs: set-env
+    runs-on: self-hosted
     services:
       ci-env:
         image: ${{ needs.set-env.outputs.ci_image }}
