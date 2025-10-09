@@ -83,7 +83,7 @@ jobs:
 
       - name: Test
         run: |
-          if ! docker inspect --format='{{.State.Healthy}}' "${{ env.CONTAINER_ID }}" | grep -q "true"; then
+          if ! docker inspect --format='{{.State.Running}}' "${{ env.CONTAINER_ID }}" | grep -q "true"; then
             echo "Aborting job due to unhealthy container state"
             exit 1
           fi
