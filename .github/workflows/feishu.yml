@@ -82,7 +82,7 @@ jobs:
 
       - name: Setup Environment Info
         run: |
-          echo "Using_image: ${{ needs.set-env.outputs.ci_image }}"
+          # echo "Using_image: ${{ needs.set-env.outputs.ci_image }}"
           container_id="$(/usr/bin/docker ps --format "{{.ID}} {{.Names}}" | grep "localhost5000" | cut -d ' ' -f 1)"
           if [ -z "$container_id" ]; then
             echo "Error: No running container found for service 'ci-env'"
