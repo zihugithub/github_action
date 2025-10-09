@@ -35,22 +35,27 @@ jobs:
     needs: set-env
     runs-on:  [self-hosted, Linux, X64, yfb_metax2]
     # services:
+    #   ci-env:
+    #     image: ${{ needs.set-env.outputs.ci_image }}
+    #     options: >-
+    #       --ipc=host
+    #       --privileged=true
+    #       --group-add video
+    #       --shm-size 100gb
+    #       --hostname flagscale_cicd
+    #       --user root
+    #       --ulimit nofile=65535:65535
+    #       --ulimit memlock=-1
+    #       --device=/dev/dri
+    #       --device=/dev/mxcd
+    #     ports:
+    #       - 80
+
     container:
-      ci-env:
-        image: ${{ needs.set-env.outputs.ci_image }}
-        options: >-
-          --ipc=host
-          --privileged=true
-          --group-add video
-          --shm-size 100gb
-          --hostname flagscale_cicd
-          --user root
-          --ulimit nofile=65535:65535
-          --ulimit memlock=-1
-          --device=/dev/dri
-          --device=/dev/mxcd
-        ports:
-          - 80
+      image: ${{ inputs.image }}
+      ports:
+        - 80
+      options: --ipc=host --privileged=true --group-add video --shm-size 100gb --hostname flagscale_cicd --user root --ulimit nofile=65535:65535 --ulimit memlock=-1 --device=/dev/dri --device=/dev/mxcd
 
     steps:
       - name: Checkout Code
