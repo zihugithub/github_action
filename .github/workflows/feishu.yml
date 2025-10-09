@@ -34,29 +34,31 @@ jobs:
   start-and-check-containers:
     needs: set-env
     runs-on: self-hosted
-    services:
-      ci-env:
-        image: ${{ needs.set-env.outputs.ci_image }}
-        options: >-
-          --ipc=host
-          --privileged=true
-          --group-add video
-          --shm-size 100gb
-          --hostname flagscale_cicd
-          --user root
-          --ulimit nofile=65535:65535
-          --ulimit memlock=-1
-          --device=/dev/dri
-          --device=/dev/mxcd
-        ports:
-          - 80
+    runs-on:  [self-hosted, Linux, X64, yfb_metax2]
 
-    # container:
-    #   # image: ${{ inputs.image }}
-    #   image: localhost:5000/flagscale:maca.ai2.33.0.13-torch2.6-py310-ubuntu22.04-amd64-time2508051515
-    #   ports:
-    #     - 80
-    #   options: --ipc=host --privileged=true --group-add video --shm-size 100gb --hostname flagscale_cicd --user root --ulimit nofile=65535:65535 --ulimit memlock=-1 --device=/dev/dri --device=/dev/mxcd
+    # services:
+    #   ci-env:
+    #     image: ${{ needs.set-env.outputs.ci_image }}
+    #     options: >-
+    #       --ipc=host
+    #       --privileged=true
+    #       --group-add video
+    #       --shm-size 100gb
+    #       --hostname flagscale_cicd
+    #       --user root
+    #       --ulimit nofile=65535:65535
+    #       --ulimit memlock=-1
+    #       --device=/dev/dri
+    #       --device=/dev/mxcd
+    #     ports:
+    #       - 80
+
+    container:
+      # image: ${{ inputs.image }}
+      image: localhost:5000/flagscale:maca.ai2.33.0.13-torch2.6-py310-ubuntu22.04-amd64-time2508051515
+      ports:
+        - 80
+      options: --ipc=host --privileged=true --group-add video --shm-size 100gb --hostname flagscale_cicd --user root --ulimit nofile=65535:65535 --ulimit memlock=-1 --device=/dev/dri --device=/dev/mxcd
 
     steps:
       - name: Checkout Code
@@ -75,25 +77,29 @@ jobs:
           submodules: false
           set-safe-directory: true
 
-      # - name: Setup Environment Info
-      #   run: |
-      #     echo "Using_image: ${{ needs.set-env.outputs.ci_image }}"
-      #     container_id="$(/usr/bin/docker ps --format "{{.ID}} {{.Names}}" | grep "localhost5000" | cut -d ' ' -f 1)"
-      #     if [ -z "$container_id" ]; then
-      #       echo "Error: No running container found for service 'ci-env'"
-      #       exit 1
-      #     fi
-      #     echo "Running_CONTAINER: ${container_id}"
-      #     echo "CONTAINER_ID=${container_id}" >> ${GITHUB_ENV}
-      #     cat ${GITHUB_ENV}
+      - name: exit container
+        run: |
+          exit
 
-      # - name: Test
-      #   run: |
-      #     if ! docker inspect --format='{{.State.Running}}' "${{ env.CONTAINER_ID }}" | grep -q "true"; then
-      #       echo "Aborting job due to unhealthy container state"
-      #       exit 1
-      #     fi
-      #     echo "CONTAINER_ID: ${{ env.CONTAINER_ID}}"
+      - name: Setup Environment Info
+        run: |
+          echo "Using_image: ${{ needs.set-env.outputs.ci_image }}"
+          container_id="$(/usr/bin/docker ps --format "{{.ID}} {{.Names}}" | grep "localhost5000" | cut -d ' ' -f 1)"
+          if [ -z "$container_id" ]; then
+            echo "Error: No running container found for service 'ci-env'"
+            exit 1
+          fi
+          echo "Running_CONTAINER: ${container_id}"
+          echo "CONTAINER_ID=${container_id}" >> ${GITHUB_ENV}
+          cat ${GITHUB_ENV}
+
+      - name: Test
+        run: |
+          if ! docker inspect --format='{{.State.Running}}' "${{ env.CONTAINER_ID }}" | grep -q "true"; then
+            echo "Aborting job due to unhealthy container state"
+            exit 1
+          fi
+          echo "CONTAINER_ID: ${{ env.CONTAINER_ID}}"
 
 
   # save-and-cleanup:
