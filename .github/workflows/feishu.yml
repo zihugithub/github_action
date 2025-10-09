@@ -86,7 +86,8 @@ jobs:
           /usr/bin/docker version --format '{{.Client.APIVersion}}'
           /usr/bin/docker ps --format="{{.ID}}"
           # /usr/bin/docker ps --filter "ancestor=${{ needs.set-env.outputs.ci_image }}" --format="{{.ID}}" # 无法输出
-          docker ps -a --format "table {{.ID}}\t{{.Image}}" | grep "${{ needs.set-env.outputs.ci_image }}"
+          # docker ps -a --format "table {{.ID}}\t{{.Image}}" | grep "${{ needs.set-env.outputs.ci_image }}"
+          /usr/bin/docker ps --filter "label=org.opencontainers.image.ref=${{ needs.set-env.outputs.ci_image }}" --format="{{.ID}}" 
           
 
 #   save-and-cleanup:
