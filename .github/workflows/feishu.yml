@@ -85,6 +85,7 @@ jobs:
           /usr/bin/docker version --format '{{.Client.APIVersion}}'
           # /usr/bin/docker ps --filter "ancestor=${{ needs.set-env.outputs.ci_image }}" --format="{{.ID}}"
           /usr/bin/docker ps --format="{{.ID}}"
+          echo "ci_image: ${{ needs.set-env.outputs.ci_image }}"
 
 #   save-and-cleanup:
 #     needs: start-and-check-containers
