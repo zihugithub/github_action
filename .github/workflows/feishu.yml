@@ -31,11 +31,11 @@ jobs:
         run: |
           echo "test_type=inference" >> $GITHUB_OUTPUT
 
-  # start-and-check-containers:
-  containers:
+  start-and-check-containers:
     needs: set-env
     runs-on:  [self-hosted, Linux, X64, yfb_metax2]
-    services:
+    # services:
+    container:
       ci-env:
         image: ${{ needs.set-env.outputs.ci_image }}
         options: >-
