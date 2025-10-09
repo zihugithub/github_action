@@ -89,7 +89,7 @@ jobs:
           # /usr/bin/docker ps --format="{{.ID}}"
           # /usr/bin/docker ps --filter "label=org.opencontainers.image.ref=${{ needs.set-env.outputs.ci_image }}" --format="{{.ID}}"  # 无法输出
           # docker ps --all --format "table {{.ID}}\t{{.Names}}\t{{.Labels}}"
-          docker ps --filter "label=com.github.workflow.service=ci-env" -q
+          docker ps -a --filter "label=com.github.workflow.service=ci-env" -q
 
 #   save-and-cleanup:
 #     needs: start-and-check-containers
