@@ -52,22 +52,22 @@ jobs:
           - 80
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-        with:
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-          ref: ${{ github.event.pull_request.head.ref }}
-          fetch-depth: 0
-          ssh-strict: true
-          ssh-user: git
-          persist-credentials: true
-          clean: true
-          sparse-checkout-cone-mode: true
-          fetch-tags: false
-          show-progress: true
-          lfs: false
-          submodules: false
-          set-safe-directory: true
+      # - name: Checkout Code
+      #   uses: actions/checkout@v4
+      #   with:
+      #     repository: ${{ github.event.pull_request.head.repo.full_name }}
+      #     ref: ${{ github.event.pull_request.head.ref }}
+      #     fetch-depth: 0
+      #     ssh-strict: true
+      #     ssh-user: git
+      #     persist-credentials: true
+      #     clean: true
+      #     sparse-checkout-cone-mode: true
+      #     fetch-tags: false
+      #     show-progress: true
+      #     lfs: false
+      #     submodules: false
+      #     set-safe-directory: true
 
       - name: Setup Environment Info
         run: |
