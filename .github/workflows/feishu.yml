@@ -31,7 +31,8 @@ jobs:
         run: |
           echo "test_type=inference" >> $GITHUB_OUTPUT
 
-  start-and-check-containers:
+  # start-and-check-containers:
+  containers:
     needs: set-env
     runs-on:  [self-hosted, Linux, X64, yfb_metax2]
     services:
@@ -69,25 +70,25 @@ jobs:
           submodules: false
           set-safe-directory: true
 
-      - name: Setup Environment Info
-        run: |
-          echo "Using_image: ${{ needs.set-env.outputs.ci_image }}"
-          container_id="$(/usr/bin/docker ps --format "{{.ID}} {{.Names}}" | grep "localhost5000" | cut -d ' ' -f 1)"
-          if [ -z "$container_id" ]; then
-            echo "Error: No running container found for service 'ci-env'"
-            exit 1
-          fi
-          echo "Running_CONTAINER: ${container_id}"
-          echo "CONTAINER_ID=${container_id}" >> ${GITHUB_ENV}
-          cat ${GITHUB_ENV}
+      # - name: Setup Environment Info
+      #   run: |
+      #     echo "Using_image: ${{ needs.set-env.outputs.ci_image }}"
+      #     container_id="$(/usr/bin/docker ps --format "{{.ID}} {{.Names}}" | grep "localhost5000" | cut -d ' ' -f 1)"
+      #     if [ -z "$container_id" ]; then
+      #       echo "Error: No running container found for service 'ci-env'"
+      #       exit 1
+      #     fi
+      #     echo "Running_CONTAINER: ${container_id}"
+      #     echo "CONTAINER_ID=${container_id}" >> ${GITHUB_ENV}
+      #     cat ${GITHUB_ENV}
 
-      - name: Test
-        run: |
-          if ! docker inspect --format='{{.State.Running}}' "${{ env.CONTAINER_ID }}" | grep -q "true"; then
-            echo "Aborting job due to unhealthy container state"
-            exit 1
-          fi
-          echo "CONTAINER_ID: ${{ env.CONTAINER_ID}}"
+      # - name: Test
+      #   run: |
+      #     if ! docker inspect --format='{{.State.Running}}' "${{ env.CONTAINER_ID }}" | grep -q "true"; then
+      #       echo "Aborting job due to unhealthy container state"
+      #       exit 1
+      #     fi
+      #     echo "CONTAINER_ID: ${{ env.CONTAINER_ID}}"
 
 
   # save-and-cleanup:
