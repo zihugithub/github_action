@@ -1,76 +1,111 @@
 name: FeiShu CI
 
+# on:
+#   push:
+#     branches: ["main"]
+#   pull_request:
+#     branches: ["main"]
+#   workflow_dispatch:
+#     inputs:
+#       level:
+#         description: "选择是否发送飞书"
+#         required: true
+#         default: "true"
+#         type: choice
+#         options:
+#           - true
+#           - false
+
+# concurrency:
+#   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}-${{ github.actor }}
+#   cancel-in-progress: true
+
+# jobs:
+#   choice_test:
+#     runs-on:  [self-hosted, Linux, X64, yfb_metax2]
+#     steps:
+#       - name: send_feishu_judge
+#         run: |
+#           echo "${{ inputs.level }}"
+
+#   feishu-notice:
+#     needs: choice_test
+#     runs-on:  [self-hosted, Linux, X64, yfb_metax2]
+#     steps:
+#       - name: Set repository context variables
+#         if: always()
+#         run: |
+#           echo "GITHUB_WORKFLOW=${{ github.workflow }}" >> ${GITHUB_ENV}
+#           echo "JOB_STATUS=${{ job.status }}" >> ${GITHUB_ENV}
+#           echo "REPO_URL=https://github.com/${{ github.repository }}.git" >> ${GITHUB_ENV}
+#           # echo "BRANCH_TARGET=${{ github.event.pull_request.head.ref }}" >> ${GITHUB_ENV}
+#           echo "GITHUB_SHA=${{ github.sha }}" >> ${GITHUB_ENV}
+#           echo "AUTHOR_NAME=${{ github.event.head_commit.author.name }}" >> ${GITHUB_ENV}
+#           echo "AUTHOR_EMAIL=${{ github.event.head_commit.author.email }}" >> ${GITHUB_ENV}
+
+#           cat ${GITHUB_ENV}
+
+#       - name: Send Feishu notification
+#         uses: NewGr8Player/feishu-message-action@v1
+#         with:
+#           webhook: ${{ secrets.FEISHU_WEBHOOK }}
+#           type: post
+#           message: '{
+#             "post":{
+#               "zh_cn":{
+#                 "title":"flagscale → ${{ env.GITHUB_WORKFLOW }}工作流构建结果通知",
+#                 "content":[
+#                   [
+#                     {"tag":"text","text":"Job 当前状态: ${{ env.JOB_STATUS }}"}
+#                   ],
+#                   [
+#                     {"tag":"text","text":"仓库名: ${{ env.REPO_URL }}"}
+#                   ], 
+#                   [
+#                     {"tag":"text","text":"目标分支: ${{ env.BRANCH_TARGET }}"}
+#                   ],
+#                   [
+#                     {"tag":"text","text":"提交哈希: ${{ env.GITHUB_SHA }}"}
+#                   ],
+#                   [
+#                     {"tag":"text","text":"贡献者: ${{ env.AUTHOR_NAME }} (Email: ${{ env.AUTHOR_EMAIL }})"}
+#                   ]
+#                 ]
+#               }
+#             }
+#           }'
+
+
 on:
-  push:
-    branches: ["main"]
-  pull_request:
-    branches: ["main"]
   workflow_dispatch:
     inputs:
-      level:
-        description: "选择是否发送飞书"
+      logLevel:
+        description: 'Log level'
         required: true
-        default: "true"
+        default: 'warning'
         type: choice
         options:
-          - true
-          - false
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}-${{ github.actor }}
-  cancel-in-progress: true
+        - info
+        - warning
+        - debug
+      tags:
+        description: 'Test scenario tags'
+        required: false
+        type: boolean
+      environment:
+        description: 'Environment to run tests against'
+        type: environment
+        required: true
 
 jobs:
-  choice_test:
-    runs-on:  [self-hosted, Linux, X64, yfb_metax2]
+  log-the-inputs:
+    runs-on: ubuntu-latest
     steps:
-      - name: send_feishu_judge
-        run: |
-          echo "${{ inputs.level }}"
-
-  feishu-notice:
-    needs: choice_test
-    runs-on:  [self-hosted, Linux, X64, yfb_metax2]
-    steps:
-      - name: Set repository context variables
-        if: always()
-        run: |
-          echo "GITHUB_WORKFLOW=${{ github.workflow }}" >> ${GITHUB_ENV}
-          echo "JOB_STATUS=${{ job.status }}" >> ${GITHUB_ENV}
-          echo "REPO_URL=https://github.com/${{ github.repository }}.git" >> ${GITHUB_ENV}
-          # echo "BRANCH_TARGET=${{ github.event.pull_request.head.ref }}" >> ${GITHUB_ENV}
-          echo "GITHUB_SHA=${{ github.sha }}" >> ${GITHUB_ENV}
-          echo "AUTHOR_NAME=${{ github.event.head_commit.author.name }}" >> ${GITHUB_ENV}
-          echo "AUTHOR_EMAIL=${{ github.event.head_commit.author.email }}" >> ${GITHUB_ENV}
-
-          cat ${GITHUB_ENV}
-
-      - name: Send Feishu notification
-        uses: NewGr8Player/feishu-message-action@v1
-        with:
-          webhook: ${{ secrets.FEISHU_WEBHOOK }}
-          type: post
-          message: '{
-            "post":{
-              "zh_cn":{
-                "title":"flagscale → ${{ env.GITHUB_WORKFLOW }}工作流构建结果通知",
-                "content":[
-                  [
-                    {"tag":"text","text":"Job 当前状态: ${{ env.JOB_STATUS }}"}
-                  ],
-                  [
-                    {"tag":"text","text":"仓库名: ${{ env.REPO_URL }}"}
-                  ], 
-                  [
-                    {"tag":"text","text":"目标分支: ${{ env.BRANCH_TARGET }}"}
-                  ],
-                  [
-                    {"tag":"text","text":"提交哈希: ${{ env.GITHUB_SHA }}"}
-                  ],
-                  [
-                    {"tag":"text","text":"贡献者: ${{ env.AUTHOR_NAME }} (Email: ${{ env.AUTHOR_EMAIL }})"}
-                  ]
-                ]
-              }
-            }
-          }'
+      - run: |
+          echo "Log level: $LEVEL"
+          echo "Tags: $TAGS"
+          echo "Environment: $ENVIRONMENT"
+        env:
+          LEVEL: ${{ inputs.logLevel }}
+          TAGS: ${{ inputs.tags }}
+          ENVIRONMENT: ${{ inputs.environment }}
