@@ -34,7 +34,7 @@ jobs:
   feishu-notice:
     needs: choice_test
     runs-on:  [self-hosted, Linux, X64, yfb_metax2]
-    if: $LEVEL == 'yes'
+    if: ${LEVEL} == 'yes'
     steps:
       - name: Set repository context variables
         if: always()
