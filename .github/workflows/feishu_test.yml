@@ -34,10 +34,10 @@ jobs:
   feishu-notice:
     needs: choice_test
     runs-on:  [self-hosted, Linux, X64, yfb_metax2]
-    if: ${LEVEL} == 'yes'
+    if: env.LEVEL == 'yes'
     steps:
       - name: Set repository context variables
-        if: always()
+        # if: always()
         run: |
           echo "GITHUB_WORKFLOW=${{ github.workflow }}" >> ${GITHUB_ENV}
           echo "JOB_STATUS=${{ job.status }}" >> ${GITHUB_ENV}
