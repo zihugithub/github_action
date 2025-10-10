@@ -1,160 +1,160 @@
-name: FeiShu CI
+# name: FeiShu CI
 
-on:
-  push:
-    branches: ["main"]
-  pull_request:
-    branches: ["main"]
-  # workflow_dispatch:
-  #   inputs:
-
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}-${{ github.actor }}
-  cancel-in-progress: true
-
-jobs:
-  # set-env:
-  #   runs-on:  [self-hosted, Linux, X64, yfb_metax2]
-  #   outputs:
-  #     ci_image: ${{ steps.set-image.outputs.ci_image }} # Declare output variable
-  #     test_tasks: ${{ steps.set-tasks.outputs.test_tasks }}
-  #     test_type: ${{ steps.set-type.outputs.test_type }}
-  #   steps:
-  #     - name: Set CI base Image
-  #       id: set-image
-  #       run: |
-  #         echo "ci_image=localhost:5000/flagscale:maca.ai2.33.0.13-torch2.6-py310-ubuntu22.04-amd64-time2508051515" >> $GITHUB_OUTPUT  # Set output variable
-  #     - name: Set Test Tasks
-  #       id: set-tasks
-  #       run: |
-  #         echo "test_tasks=deepseek_r1_distill_qwen-metax,opi_llama3_1_instruct-metax,opi_llama3_1_instruct-flaggems-metax,qwen3-metax,qwen3-flaggems-metax" >> $GITHUB_OUTPUT
-  #     - name: Set Test Type
-  #       id: set-type
-  #       run: |
-  #         echo "test_type=inference" >> $GITHUB_OUTPUT
-
-  # start-and-check-containers:
-  #   # needs: set-env
-  #   runs-on:  [self-hosted, Linux, X64, yfb_metax2]
-
-    # services:
-    #   ci-env:
-    #     # image: ${{ needs.set-env.outputs.ci_image }}
-    #     image: localhost:5000/flagscale:maca.ai2.33.0.13-torch2.6-py310-ubuntu22.04-amd64-time2508051515
-    #     options: >-
-    #       --ipc=host
-    #       --privileged=true
-    #       --group-add video
-    #       --shm-size 100gb
-    #       --hostname flagscale_cicd
-    #       --user root
-    #       --ulimit nofile=65535:65535
-    #       --ulimit memlock=-1
-    #       --device=/dev/dri
-    #       --device=/dev/mxcd
-    #     ports:
-    #       - 80
-
-    # container:
-    #   # image: ${{ inputs.image }}
-    #   image: localhost:5000/flagscale:maca.ai2.33.0.13-torch2.6-py310-ubuntu22.04-amd64-time2508051515
-    #   ports:
-    #     - 80
-    #   options: --ipc=host --privileged=true --group-add video --shm-size 100gb --hostname flagscale_cicd --user root --ulimit nofile=65535:65535 --ulimit memlock=-1 --device=/dev/dri --device=/dev/mxcd
-
-    # steps:
-      # - name: Checkout Code
-      #   uses: actions/checkout@v4
-      #   with:
-      #     repository: ${{ github.event.pull_request.head.repo.full_name }}
-      #     ref: ${{ github.event.pull_request.head.ref }}
-      #     ssh-strict: true
-      #     ssh-user: git
-      #     persist-credentials: true
-      #     clean: true
-      #     sparse-checkout-cone-mode: true
-      #     fetch-tags: false
-      #     show-progress: true
-      #     lfs: false
-      #     submodules: false
-      #     set-safe-directory: true
-
-      # - name: Setup Environment Info
-      #   run: |
-      #     # echo "Using_image: ${{ needs.set-env.outputs.ci_image }}"
-      #     container_id="$(/usr/bin/docker ps --format "{{.ID}} {{.Names}}" | grep "localhost5000" | cut -d ' ' -f 1)"
-      #     if [ -z "$container_id" ]; then
-      #       echo "Error: No running container found for service 'ci-env'"
-      #       exit 1
-      #     fi
-      #     echo "Running_CONTAINER: ${container_id}"
-      #     echo "CONTAINER_ID=${container_id}" >> ${GITHUB_ENV}
-      #     cat ${GITHUB_ENV}
-
-      # - name: Test
-      #   run: |
-      #     if ! docker inspect --format='{{.State.Running}}' "${{ env.CONTAINER_ID }}" | grep -q "true"; then
-      #       echo "Aborting job due to unhealthy container state"
-      #       exit 1
-      #     fi
-      #     echo "CONTAINER_ID: ${{ env.CONTAINER_ID}}"
+# on:
+#   push:
+#     branches: ["main"]
+#   pull_request:
+#     branches: ["main"]
+#   # workflow_dispatch:
+#   #   inputs:
 
 
-  # save-and-cleanup:
-  #   needs: start-and-check-containers
-  #   runs-on:  [self-hosted, Linux, X64, yfb_metax2]
-  #   steps:
-  #     - name: Save running container as image
-  #       run: |
-  #         # CONTAINER_ID="${{ needs.start-and-check-containers.outputs.container_id }}"
-  #         CONTAINER_ID="$(docker ps --filter "ancestor=${{ needs.set-env.outputs.ci_image }}" --format="{{.ID}}")"
-  #         echo ${CONTAINER_ID}
+# concurrency:
+#   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}-${{ github.actor }}
+#   cancel-in-progress: true
 
-# ******************************************************************************************
-  feishu-notice:
-    # needs: save-and-cleanup
-    runs-on:  [self-hosted, Linux, X64, yfb_metax2]
-    steps:
-      - name: Set repository context variables
-        if: always()
-        run: |
-          echo "GITHUB_WORKFLOW=${{ github.workflow }}" >> ${GITHUB_ENV}
-          echo "JOB_STATUS=${{ job.status }}" >> ${GITHUB_ENV}
-          echo "REPO_URL=https://github.com/${{ github.repository }}.git" >> ${GITHUB_ENV}
-          # echo "BRANCH_TARGET=${{ github.event.pull_request.head.ref }}" >> ${GITHUB_ENV}
-          echo "GITHUB_SHA=${{ github.sha }}" >> ${GITHUB_ENV}
-          echo "AUTHOR_NAME=${{ github.event.head_commit.author.name }}" >> ${GITHUB_ENV}
-          echo "AUTHOR_EMAIL=${{ github.event.head_commit.author.email }}" >> ${GITHUB_ENV}
+# jobs:
+#   # set-env:
+#   #   runs-on:  [self-hosted, Linux, X64, yfb_metax2]
+#   #   outputs:
+#   #     ci_image: ${{ steps.set-image.outputs.ci_image }} # Declare output variable
+#   #     test_tasks: ${{ steps.set-tasks.outputs.test_tasks }}
+#   #     test_type: ${{ steps.set-type.outputs.test_type }}
+#   #   steps:
+#   #     - name: Set CI base Image
+#   #       id: set-image
+#   #       run: |
+#   #         echo "ci_image=localhost:5000/flagscale:maca.ai2.33.0.13-torch2.6-py310-ubuntu22.04-amd64-time2508051515" >> $GITHUB_OUTPUT  # Set output variable
+#   #     - name: Set Test Tasks
+#   #       id: set-tasks
+#   #       run: |
+#   #         echo "test_tasks=deepseek_r1_distill_qwen-metax,opi_llama3_1_instruct-metax,opi_llama3_1_instruct-flaggems-metax,qwen3-metax,qwen3-flaggems-metax" >> $GITHUB_OUTPUT
+#   #     - name: Set Test Type
+#   #       id: set-type
+#   #       run: |
+#   #         echo "test_type=inference" >> $GITHUB_OUTPUT
 
-          cat ${GITHUB_ENV}
+#   # start-and-check-containers:
+#   #   # needs: set-env
+#   #   runs-on:  [self-hosted, Linux, X64, yfb_metax2]
 
-      - name: Send Feishu notification
-        uses: NewGr8Player/feishu-message-action@v1
-        with:
-          webhook: ${{ secrets.FEISHU_WEBHOOK }}
-          type: post
-          message: '{
-            "post":{
-              "zh_cn":{
-                "title":"flagscale → ${{ env.GITHUB_WORKFLOW }}工作流构建结果通知",
-                "content":[
-                  [
-                    {"tag":"text","text":"Job 当前状态: ${{ env.JOB_STATUS }}"}
-                  ],
-                  [
-                    {"tag":"text","text":"仓库名: ${{ env.REPO_URL }}"}
-                  ], 
-                  [
-                    {"tag":"text","text":"目标分支: ${{ env.BRANCH_TARGET }}"}
-                  ],
-                  [
-                    {"tag":"text","text":"提交哈希: ${{ env.GITHUB_SHA }}"}
-                  ],
-                  [
-                    {"tag":"text","text":"贡献者: ${{ env.AUTHOR_NAME }} (Email: ${{ env.AUTHOR_EMAIL }})"}
-                  ]
-                ]
-              }
-            }
-          }'
+#     # services:
+#     #   ci-env:
+#     #     # image: ${{ needs.set-env.outputs.ci_image }}
+#     #     image: localhost:5000/flagscale:maca.ai2.33.0.13-torch2.6-py310-ubuntu22.04-amd64-time2508051515
+#     #     options: >-
+#     #       --ipc=host
+#     #       --privileged=true
+#     #       --group-add video
+#     #       --shm-size 100gb
+#     #       --hostname flagscale_cicd
+#     #       --user root
+#     #       --ulimit nofile=65535:65535
+#     #       --ulimit memlock=-1
+#     #       --device=/dev/dri
+#     #       --device=/dev/mxcd
+#     #     ports:
+#     #       - 80
+
+#     # container:
+#     #   # image: ${{ inputs.image }}
+#     #   image: localhost:5000/flagscale:maca.ai2.33.0.13-torch2.6-py310-ubuntu22.04-amd64-time2508051515
+#     #   ports:
+#     #     - 80
+#     #   options: --ipc=host --privileged=true --group-add video --shm-size 100gb --hostname flagscale_cicd --user root --ulimit nofile=65535:65535 --ulimit memlock=-1 --device=/dev/dri --device=/dev/mxcd
+
+#     # steps:
+#       # - name: Checkout Code
+#       #   uses: actions/checkout@v4
+#       #   with:
+#       #     repository: ${{ github.event.pull_request.head.repo.full_name }}
+#       #     ref: ${{ github.event.pull_request.head.ref }}
+#       #     ssh-strict: true
+#       #     ssh-user: git
+#       #     persist-credentials: true
+#       #     clean: true
+#       #     sparse-checkout-cone-mode: true
+#       #     fetch-tags: false
+#       #     show-progress: true
+#       #     lfs: false
+#       #     submodules: false
+#       #     set-safe-directory: true
+
+#       # - name: Setup Environment Info
+#       #   run: |
+#       #     # echo "Using_image: ${{ needs.set-env.outputs.ci_image }}"
+#       #     container_id="$(/usr/bin/docker ps --format "{{.ID}} {{.Names}}" | grep "localhost5000" | cut -d ' ' -f 1)"
+#       #     if [ -z "$container_id" ]; then
+#       #       echo "Error: No running container found for service 'ci-env'"
+#       #       exit 1
+#       #     fi
+#       #     echo "Running_CONTAINER: ${container_id}"
+#       #     echo "CONTAINER_ID=${container_id}" >> ${GITHUB_ENV}
+#       #     cat ${GITHUB_ENV}
+
+#       # - name: Test
+#       #   run: |
+#       #     if ! docker inspect --format='{{.State.Running}}' "${{ env.CONTAINER_ID }}" | grep -q "true"; then
+#       #       echo "Aborting job due to unhealthy container state"
+#       #       exit 1
+#       #     fi
+#       #     echo "CONTAINER_ID: ${{ env.CONTAINER_ID}}"
+
+
+#   # save-and-cleanup:
+#   #   needs: start-and-check-containers
+#   #   runs-on:  [self-hosted, Linux, X64, yfb_metax2]
+#   #   steps:
+#   #     - name: Save running container as image
+#   #       run: |
+#   #         # CONTAINER_ID="${{ needs.start-and-check-containers.outputs.container_id }}"
+#   #         CONTAINER_ID="$(docker ps --filter "ancestor=${{ needs.set-env.outputs.ci_image }}" --format="{{.ID}}")"
+#   #         echo ${CONTAINER_ID}
+
+# # ******************************************************************************************
+#   feishu-notice:
+#     # needs: save-and-cleanup
+#     runs-on:  [self-hosted, Linux, X64, yfb_metax2]
+#     steps:
+#       - name: Set repository context variables
+#         if: always()
+#         run: |
+#           echo "GITHUB_WORKFLOW=${{ github.workflow }}" >> ${GITHUB_ENV}
+#           echo "JOB_STATUS=${{ job.status }}" >> ${GITHUB_ENV}
+#           echo "REPO_URL=https://github.com/${{ github.repository }}.git" >> ${GITHUB_ENV}
+#           # echo "BRANCH_TARGET=${{ github.event.pull_request.head.ref }}" >> ${GITHUB_ENV}
+#           echo "GITHUB_SHA=${{ github.sha }}" >> ${GITHUB_ENV}
+#           echo "AUTHOR_NAME=${{ github.event.head_commit.author.name }}" >> ${GITHUB_ENV}
+#           echo "AUTHOR_EMAIL=${{ github.event.head_commit.author.email }}" >> ${GITHUB_ENV}
+
+#           cat ${GITHUB_ENV}
+
+#       - name: Send Feishu notification
+#         uses: NewGr8Player/feishu-message-action@v1
+#         with:
+#           webhook: ${{ secrets.FEISHU_WEBHOOK }}
+#           type: post
+#           message: '{
+#             "post":{
+#               "zh_cn":{
+#                 "title":"flagscale → ${{ env.GITHUB_WORKFLOW }}工作流构建结果通知",
+#                 "content":[
+#                   [
+#                     {"tag":"text","text":"Job 当前状态: ${{ env.JOB_STATUS }}"}
+#                   ],
+#                   [
+#                     {"tag":"text","text":"仓库名: ${{ env.REPO_URL }}"}
+#                   ], 
+#                   [
+#                     {"tag":"text","text":"目标分支: ${{ env.BRANCH_TARGET }}"}
+#                   ],
+#                   [
+#                     {"tag":"text","text":"提交哈希: ${{ env.GITHUB_SHA }}"}
+#                   ],
+#                   [
+#                     {"tag":"text","text":"贡献者: ${{ env.AUTHOR_NAME }} (Email: ${{ env.AUTHOR_EMAIL }})"}
+#                   ]
+#                 ]
+#               }
+#             }
+#           }'
