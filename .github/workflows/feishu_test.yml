@@ -80,18 +80,18 @@ jobs:
           echo "RUNNER_TOOL_CACHE: ${RUNNER_TOOL_CACHE}"
 
 
-      # - name: Set repository context variables
-      #   # if: always()
-      #   run: |
-      #     echo "GITHUB_WORKFLOW=${{ github.workflow }}" >> ${GITHUB_ENV}
-      #     echo "JOB_STATUS=${{ job.status }}" >> ${GITHUB_ENV}
-      #     echo "REPO_URL=https://github.com/${{ github.repository }}.git" >> ${GITHUB_ENV}
-      #     # echo "BRANCH_TARGET=${{ github.event.pull_request.head.ref }}" >> ${GITHUB_ENV}
-      #     echo "GITHUB_SHA=${{ github.sha }}" >> ${GITHUB_ENV}
-      #     echo "AUTHOR_NAME=${{ github.event.head_commit.author.name }}" >> ${GITHUB_ENV}
-      #     echo "AUTHOR_EMAIL=${{ github.event.head_commit.author.email }}" >> ${GITHUB_ENV}
+      - name: Set repository context variables
+        # if: always()
+        run: |
+          echo "GITHUB_WORKFLOW=${{ github.workflow }}" >> ${GITHUB_ENV}
+          echo "JOB_STATUS=${{ job.status }}" >> ${GITHUB_ENV}
+          echo "REPO_URL=https://github.com/${{ github.repository }}.git" >> ${GITHUB_ENV}
+          # echo "BRANCH_TARGET=${{ github.event.pull_request.head.ref }}" >> ${GITHUB_ENV}
+          echo "GITHUB_SHA=${{ github.sha }}" >> ${GITHUB_ENV}
+          echo "AUTHOR_NAME=${{ github.event.head_commit.author.name }}" >> ${GITHUB_ENV}
+          echo "AUTHOR_EMAIL=${{ github.event.head_commit.author.email }}" >> ${GITHUB_ENV}
 
-      #     cat ${GITHUB_ENV}
+          cat ${GITHUB_ENV}
 
       - name: Send Feishu notification
         # if: ${{ inputs.level  == 'debug' }}
@@ -107,12 +107,12 @@ jobs:
                   [
                     {"tag":"text","text":"作业运行体系: ${RUNNER_OS}_${RUNNER_ARCH}"},
                     {"tag":"text","text":"运行器: ${RUNNER_NAME},
-                    {"tag":"text","text":"运行环境: ${RUNNER_ENVIRONMENT},
+                    {"tag":"text","text":"运行环境: ${RUNNER_ENVIRONMENT}
                   ],
                   [
                     {"tag":"text","text":"REPO: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}"},
                     {"tag":"text","text":"目标分支: ${GITHUB_REF_NAME}"}
-                    {"tag":"text","text":"提交哈希: ${GITHUB_SHA}"},
+                    {"tag":"text","text":"提交哈希: ${GITHUB_SHA}"}
                   ],
                   [
                     {"tag":"text","text":"触发工作流程的事件: ${GITHUB_EVENT_NAME}"},
@@ -120,7 +120,7 @@ jobs:
                     {"tag":"text","text":"发起工作流运行的用户的用户名: ${GITHUB_TRIGGERING_ACTOR}"},
                     {"tag":"text","text":"运行次数: ${GITHUB_RUN_NUMBER}"},
                     {"tag":"text","text":"工作流运行日志和项目保留的天数: ${GITHUB_RETENTION_DAYS}"},
-                    {"tag":"text","text":"链接: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"},
+                    {"tag":"text","text":"链接: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"}
                   ],
                   [
                     {"tag":"text","text":"Job 当前状态: ${{ env.JOB_STATUS }}"}
