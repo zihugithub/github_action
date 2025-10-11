@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
     inputs:
       level:
-        description: "选择是否发送飞书"
+        description: "choice send feishu"
         required: true
         default: "no"
         type: choice
