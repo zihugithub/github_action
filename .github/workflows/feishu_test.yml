@@ -20,21 +20,18 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}-${{ github.actor }}
   cancel-in-progress: true
 
-env:
-  LEVEL: ${{ inputs.level }}
-
 jobs:
   choice_test:
     runs-on:  [self-hosted, Linux, X64, yfb_metax2]
     steps:
       - name: send_feishu_judge
         run: |
-          echo "$LEVEL"
+          echo ${{ inputs.level }}
 
   feishu-notice:
     needs: choice_test
     runs-on:  [self-hosted, Linux, X64, yfb_metax2]
-    # if: env.LEVEL == 'yes'
+    if: ${{ inputs.level }} == 'yes'
     steps:
       - name: Set repository context variables
         # if: always()
