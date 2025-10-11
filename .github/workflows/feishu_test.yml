@@ -106,8 +106,8 @@ jobs:
                 "content":[
                   [
                     {"tag":"text","text":"作业运行体系: ${RUNNER_OS}_${RUNNER_ARCH}"},
-                    {"tag":"text","text":"运行器: ${RUNNER_NAME},
-                    {"tag":"text","text":"运行环境: ${RUNNER_ENVIRONMENT}
+                    {"tag":"text","text":"运行器: ${RUNNER_NAME}"},
+                    {"tag":"text","text":"运行环境: ${RUNNER_ENVIRONMENT}"}
                   ],
                   [
                     {"tag":"text","text":"REPO: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}"},
