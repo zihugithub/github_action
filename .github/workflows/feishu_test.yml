@@ -94,7 +94,7 @@ jobs:
       #     cat ${GITHUB_ENV}
 
       - name: Send Feishu notification
-        if: ${{ inputs.level  == 'debug' }}
+        # if: ${{ inputs.level  == 'debug' }}
         uses: NewGr8Player/feishu-message-action@v1
         with:
           webhook: ${{ secrets.FEISHU_WEBHOOK }}
