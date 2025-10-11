@@ -61,8 +61,8 @@ jobs:
           echo "GITHUB_REPOSITORY_OWNER_ID: ${GITHUB_REPOSITORY_OWNER_ID}"
           echo "GITHUB_RETENTION_DAYS: ${GITHUB_RETENTION_DAYS}"  # 工作流运行日志和项目保留的天数,eg: 90
           echo "GITHUB_RUN_ATTEMPT: ${GITHUB_RUN_ATTEMPT}"
-          echo "GITHUB_RUN_ID: ${GITHUB_RUN_ID}"
-          echo "GITHUB_RUN_NUMBER: ${GITHUB_RUN_NUMBER}"
+          echo "GITHUB_RUN_ID: ${GITHUB_RUN_ID}"  # 每个工作流运行的唯一编号
+          echo "GITHUB_RUN_NUMBER: ${GITHUB_RUN_NUMBER}"  # 运行次数
           echo "GITHUB_SERVER_URL: ${GITHUB_SERVER_URL}"  # GitHub 服务器的 URL, eg: https://github.com
           echo "GITHUB_SHA: ${GITHUB_SHA}"   # 触发工作流的提交 SHA, commitID
           echo "GITHUB_STEP_SUMMARY: ${GITHUB_STEP_SUMMARY}"
@@ -70,7 +70,7 @@ jobs:
           echo "GITHUB_WORKFLOW: ${GITHUB_WORKFLOW}"  # 工作流的名称, eg: FeiShu CI
           echo "GITHUB_WORKFLOW_REF: ${GITHUB_WORKFLOW_REF}" # 工作流的引用路径, eg: zihugithub/github_action/.github/workflows/feishu_test.yml@refs/heads/main
           echo "GITHUB_WORKFLOW_SHA: ${GITHUB_WORKFLOW_SHA}" # 工作流文件的提交 SHA
-          echo "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"  # 
+          echo "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
           echo "RUNNER_ARCH: ${RUNNER_ARCH}"  # 执行作业的运行器的体系结构。 可能的值为 X86、X64、ARM 或 ARM64
           echo "RUNNER_DEBUG: ${RUNNER_DEBUG}"
           echo "RUNNER_ENVIRONMENT: ${RUNNER_ENVIRONMENT}" # 执行作业的运行器的环境, eg: self-hosted
@@ -93,34 +93,52 @@ jobs:
 
       #     cat ${GITHUB_ENV}
 
-      # - name: Send Feishu notification
-      #   if: ${{ inputs.level  == 'debug' }}
-      #   uses: NewGr8Player/feishu-message-action@v1
-      #   with:
-      #     webhook: ${{ secrets.FEISHU_WEBHOOK }}
-      #     type: post
-      #     message: '{
-      #       "post":{
-      #         "zh_cn":{
-      #           "title":"flagscale → ${{ env.GITHUB_WORKFLOW }}工作流构建结果通知",
-      #           "content":[
-      #             [
-      #               {"tag":"text","text":"Job 当前状态: ${{ env.JOB_STATUS }}"}
-      #             ],
-      #             [
-      #               {"tag":"text","text":"仓库名: ${{ env.REPO_URL }}"}
-      #             ], 
-      #             [
-      #               {"tag":"text","text":"目标分支: ${{ env.BRANCH_TARGET }}"}
-      #             ],
-      #             [
-      #               {"tag":"text","text":"提交哈希: ${{ env.GITHUB_SHA }}"}
-      #             ],
-      #             [
-      #               {"tag":"text","text":"贡献者: ${{ env.AUTHOR_NAME }} (Email: ${{ env.AUTHOR_EMAIL }})"}
-      #             ]
-      #           ]
-      #         }
-      #       }
-      #     }'
+      - name: Send Feishu notification
+        if: ${{ inputs.level  == 'debug' }}
+        uses: NewGr8Player/feishu-message-action@v1
+        with:
+          webhook: ${{ secrets.FEISHU_WEBHOOK }}
+          type: post
+          message: '{
+            "post":{
+              "zh_cn":{
+                "title":"flagscale → 工作流**${GITHUB_WORKFLOW}**构建结果通知",
+                "content":[
+                  [
+                    {"tag":"text","text":"作业运行体系: ${RUNNER_OS}_${RUNNER_ARCH}"},
+                    {"tag":"text","text":"运行器: ${RUNNER_NAME},
+                    {"tag":"text","text":"运行环境: ${RUNNER_ENVIRONMENT},
+                  ],
+                  [
+                    {"tag":"text","text":"REPO: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}"},
+                    {"tag":"text","text":"目标分支: ${GITHUB_REF_NAME}"}
+                    {"tag":"text","text":"提交哈希: ${GITHUB_SHA}"},
+                  ],
+                  [
+                    {"tag":"text","text":"触发工作流程的事件: ${GITHUB_EVENT_NAME}"},
+                    {"tag":"text","text":"当前作业: ${GITHUB_JOB}"},
+                    {"tag":"text","text":"发起工作流运行的用户的用户名: ${GITHUB_TRIGGERING_ACTOR}"},
+                    {"tag":"text","text":"运行次数: ${GITHUB_RUN_NUMBER}"},
+                    {"tag":"text","text":"工作流运行日志和项目保留的天数: ${GITHUB_RETENTION_DAYS}"},
+                    {"tag":"text","text":"链接: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"},
+                  ],
+                  [
+                    {"tag":"text","text":"Job 当前状态: ${{ env.JOB_STATUS }}"}
+                  ],
+                  [
+                    {"tag":"text","text":"仓库名: ${{ env.REPO_URL }}"}
+                  ], 
+                  [
+                    {"tag":"text","text":"目标分支: ${{ env.BRANCH_TARGET }}"}
+                  ],
+                  [
+                    {"tag":"text","text":"提交哈希: ${{ env.GITHUB_SHA }}"}
+                  ],
+                  [
+                    {"tag":"text","text":"贡献者: ${{ env.AUTHOR_NAME }} (Email: ${{ env.AUTHOR_EMAIL }})"}
+                  ]
+                ]
+              }
+            }
+          }'
 
