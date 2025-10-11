@@ -11,7 +11,7 @@ on:
         description: "choice send feishu"
         required: true
         default: "debug"
-        type: string
+        type: choice # boolean, choice, number, environment or string
         options:
           - info
           - warning
@@ -47,7 +47,7 @@ jobs:
           cat ${GITHUB_ENV}
 
       - name: Send Feishu notification
-        if: ${{ inputs.level }} == 'debug'
+        if: ${{ inputs.level == 'debug' }}
         uses: NewGr8Player/feishu-message-action@v1
         with:
           webhook: ${{ secrets.FEISHU_WEBHOOK }}
