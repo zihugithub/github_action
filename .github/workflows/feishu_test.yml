@@ -11,7 +11,7 @@ on:
         description: "choice send feishu"
         required: true
         default: "debug"
-        type: choice
+        type: string
         options:
           - info
           - warning
