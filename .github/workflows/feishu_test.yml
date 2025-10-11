@@ -111,7 +111,7 @@ jobs:
                   ],
                   [
                     {"tag":"text","text":"REPO: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}"},
-                    {"tag":"text","text":"目标分支: ${GITHUB_REF_NAME}"}
+                    {"tag":"text","text":"目标分支: ${GITHUB_REF_NAME}"},
                     {"tag":"text","text":"提交哈希: ${GITHUB_SHA}"}
                   ],
                   [
