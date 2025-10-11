@@ -10,11 +10,12 @@ on:
       level:
         description: "choice send feishu"
         required: true
-        default: "no"
+        default: "debug"
         type: choice
         options:
-          - yes
-          - no
+          - info
+          - warning
+          - debug
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}-${{ github.actor }}
@@ -31,7 +32,7 @@ jobs:
   feishu-notice:
     needs: choice_test
     runs-on:  [self-hosted, Linux, X64, yfb_metax2]
-    if: ${{ inputs.level }} == 'yes'
+    if: ${{ inputs.level }} == 'debug'
     steps:
       - name: Set repository context variables
         # if: always()
