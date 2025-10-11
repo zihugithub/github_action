@@ -102,7 +102,7 @@ jobs:
           message: '{
             "post":{
               "zh_cn":{
-                "title":"flagscale → 工作流**${GITHUB_WORKFLOW}**构建结果通知",
+                "title":"flagscale → 工作流${ GITHUB_WORKFLOW }构建结果通知",
                 "content":[
                   [
                     {"tag":"text","text":"作业运行体系: ${RUNNER_OS}_${RUNNER_ARCH}"},
