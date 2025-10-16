@@ -66,22 +66,22 @@ jobs:
         - 80
       options: --ipc=host --privileged=true --group-add video --shm-size 100gb --hostname flagscale_cicd --user root --ulimit nofile=65535:65535 --ulimit memlock=-1 --device=/dev/dri --device=/dev/mxcd
 
-    # steps:
-      # - name: Checkout Code
-      #   uses: actions/checkout@v4
-      #   with:
-      #     repository: ${{ github.event.pull_request.head.repo.full_name }}
-      #     ref: ${{ github.event.pull_request.head.ref }}
-      #     ssh-strict: true
-      #     ssh-user: git
-      #     persist-credentials: true
-      #     clean: true
-      #     sparse-checkout-cone-mode: true
-      #     fetch-tags: false
-      #     show-progress: true
-      #     lfs: false
-      #     submodules: false
-      #     set-safe-directory: true
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+          ssh-strict: true
+          ssh-user: git
+          persist-credentials: true
+          clean: true
+          sparse-checkout-cone-mode: true
+          fetch-tags: false
+          show-progress: true
+          lfs: false
+          submodules: false
+          set-safe-directory: true
 
       # - name: Setup Environment Info
       #   run: |
