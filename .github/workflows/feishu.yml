@@ -59,8 +59,8 @@ jobs:
     container:
       # image: ${{ inputs.image }}
       env:
-        HTTP_PROXY: ${secrets.PRIVATE_PROXY_URL}
-        HTTPS_PROXY: ${secrets.PRIVATE_PROXY_URL}
+        HTTP_PROXY: ${{ secrets.PRIVATE_PROXY_URL }}
+        HTTPS_PROXY: ${{ secrets.PRIVATE_PROXY_URL }}
       image: localhost:5000/flagscale:maca.ai2.33.0.13-torch2.6-py310-ubuntu22.04-amd64-time2508051515
       ports:
         - 80
