@@ -68,8 +68,7 @@ jobs:
 
     steps:
       - name: Checkout Code
-      - uses: actions/checkout@v4
-        uses: googlecloudplatform/github-actions-gemni@vX.Y.Z
+        uses: actions/checkout@v4
         with:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.event.pull_request.head.ref }}
@@ -82,10 +81,10 @@ jobs:
           show-progress: true
           lfs: false
           submodules: false
-          set-safe-directory: true
-          config-path: '.gemini/config.yml'
+          set-safe-directory: true   
 
       - name: Setup Environment Info
+        # /gemini please review this pull request in details
         run: |
           echo "XXXXXXXXXXXXXXXXXXXXX"
           # echo "Using_image: ${{ needs.set-env.outputs.ci_image }}"
